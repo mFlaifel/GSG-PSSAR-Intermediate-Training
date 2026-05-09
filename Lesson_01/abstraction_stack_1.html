@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How a Program Really Works</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --surface2: #181b22;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.14);
+    --text: #e8e6e0;
+    --muted: #6b6d74;
+    --accent-py: #4ade80;
+    --accent-interp: #60a5fa;
+    --accent-machine: #f59e0b;
+    --accent-os: #a78bfa;
+    --accent-hw: #f87171;
+    --mono: 'DM Mono', monospace;
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  html, body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  body {
+    display: grid;
+    grid-template-columns: 1fr minmax(0, 860px) 1fr;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+  }
+
+  /* Ambient background glow */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 10%, rgba(74,222,128,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 80% 80%, rgba(96,165,250,0.04) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .main {
+    grid-column: 2;
+    padding: 48px 24px 64px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    margin-bottom: 48px;
+    border-bottom: 0.5px solid var(--border);
+    padding-bottom: 32px;
+  }
+
+  .header-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .header h1 {
+    font-family: var(--serif);
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+
+  .header h1 em {
+    font-style: italic;
+    color: rgba(232,230,224,0.5);
+  }
+
+  .header-sub {
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 520px;
+  }
+
+  .code-pill {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.06);
+    border: 0.5px solid var(--border2);
+    color: var(--accent-py);
+  }
+
+  /* Layout: stack + panel */
+  .content {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  @media (max-width: 700px) {
+    .content { grid-template-columns: 1fr; }
+    .right-panel { order: -1; }
+  }
+
+  /* Stack column */
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .layer {
+    position: relative;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .layer-inner {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  /* Vertical connector line */
+  .layer-line {
+    width: 2px;
+    background: var(--border);
+    flex-shrink: 0;
+    margin: 0 16px;
+    position: relative;
+    transition: background 0.4s;
+    border-radius: 1px;
+  }
+
+  /* Fill animation for the line */
+  .layer-line::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0%;
+    border-radius: 1px;
+    transition: height 0.5s ease 0.2s, background 0.4s;
+  }
+
+  .layer.done .layer-line::after {
+    height: 100%;
+  }
+
+  /* Dot on the line */
+  .layer-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--border2);
+    background: var(--bg);
+    z-index: 2;
+    transition: all 0.3s;
+  }
+
+  .layer.active .layer-dot,
+  .layer.done .layer-dot {
+    border-width: 2px;
+  }
+
+  .layer-body {
+    flex: 1;
+    padding: 0 0 20px 0;
+  }
+
+  .layer-card {
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    background: var(--surface);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .layer:hover .layer-card { border-color: var(--border2); }
+
+  .layer.active .layer-card {
+    background: var(--surface2);
+  }
+
+  .layer.done .layer-card {
+    opacity: 0.7;
+  }
+
+  .layer-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .layer-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--muted);
+    transition: all 0.3s;
+  }
+
+  .layer.active .layer-num { color: var(--text); border-color: currentColor; }
+
+  .layer-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .layer-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .layer-hint {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  .layer.active .layer-hint { color: rgba(232,230,224,0.5); }
+
+  /* Color themes per layer */
+  .layer[data-layer="0"] .layer-num { color: var(--accent-py); border-color: var(--accent-py); }
+  .layer[data-layer="0"] .layer-tag { background: rgba(74,222,128,0.1); color: var(--accent-py); border: 0.5px solid rgba(74,222,128,0.2); }
+  .layer[data-layer="0"].active .layer-card { border-color: rgba(74,222,128,0.25); }
+  .layer[data-layer="0"].done .layer-line::after { background: var(--accent-py); }
+  .layer[data-layer="0"] .layer-dot { border-color: var(--accent-py); }
+
+  .layer[data-layer="1"] .layer-num { color: var(--accent-interp); border-color: var(--accent-interp); }
+  .layer[data-layer="1"] .layer-tag { background: rgba(96,165,250,0.1); color: var(--accent-interp); border: 0.5px solid rgba(96,165,250,0.2); }
+  .layer[data-layer="1"].active .layer-card { border-color: rgba(96,165,250,0.25); }
+  .layer[data-layer="1"].done .layer-line::after { background: var(--accent-interp); }
+  .layer[data-layer="1"] .layer-dot { border-color: var(--accent-interp); }
+
+  .layer[data-layer="2"] .layer-num { color: var(--accent-machine); border-color: var(--accent-machine); }
+  .layer[data-layer="2"] .layer-tag { background: rgba(245,158,11,0.1); color: var(--accent-machine); border: 0.5px solid rgba(245,158,11,0.2); }
+  .layer[data-layer="2"].active .layer-card { border-color: rgba(245,158,11,0.25); }
+  .layer[data-layer="2"].done .layer-line::after { background: var(--accent-machine); }
+  .layer[data-layer="2"] .layer-dot { border-color: var(--accent-machine); }
+
+  .layer[data-layer="3"] .layer-num { color: var(--accent-os); border-color: var(--accent-os); }
+  .layer[data-layer="3"] .layer-tag { background: rgba(167,139,250,0.1); color: var(--accent-os); border: 0.5px solid rgba(167,139,250,0.2); }
+  .layer[data-layer="3"].active .layer-card { border-color: rgba(167,139,250,0.25); }
+  .layer[data-layer="3"].done .layer-line::after { background: var(--accent-os); }
+  .layer[data-layer="3"] .layer-dot { border-color: var(--accent-os); }
+
+  .layer[data-layer="4"] .layer-num { color: var(--accent-hw); border-color: var(--accent-hw); }
+  .layer[data-layer="4"] .layer-tag { background: rgba(248,113,113,0.1); color: var(--accent-hw); border: 0.5px solid rgba(248,113,113,0.2); }
+  .layer[data-layer="4"].active .layer-card { border-color: rgba(248,113,113,0.25); }
+  .layer[data-layer="4"] .layer-dot { border-color: var(--accent-hw); }
+
+  /* Right panel */
+  .right-panel {
+    position: sticky;
+    top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .panel-card {
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 12px 16px;
+    border-bottom: 0.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .panel-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .panel-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    transition: all 0.3s;
+  }
+
+  .panel-body {
+    padding: 16px;
+  }
+
+  /* Code block */
+  .code-block {
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.7;
+    min-height: 80px;
+    position: relative;
+  }
+
+  .code-line {
+    display: flex;
+    gap: 12px;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+
+  .code-line.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .code-ln {
+    color: var(--muted);
+    user-select: none;
+    min-width: 16px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .code-text { flex: 1; white-space: pre; }
+
+  /* Syntax colors */
+  .kw { color: #c084fc; }
+  .str { color: #86efac; }
+  .num { color: #fbbf24; }
+  .fn { color: #60a5fa; }
+  .cm { color: #4b5563; font-style: italic; }
+  .op { color: #94a3b8; }
+  .reg { color: #f97316; }
+  .addr { color: #a78bfa; }
+
+  /* Explanation */
+  .explain-text {
+    font-size: 14px;
+    line-height: 1.7;
+    color: rgba(232,230,224,0.75);
+    min-height: 60px;
+    transition: opacity 0.3s;
+  }
+
+  .explain-text strong { color: var(--text); font-weight: 500; }
+  .explain-text code {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.06);
+    color: var(--text);
+  }
+
+  /* Memory visualizer */
+  .memory-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .mem-cell {
+    border: 0.5px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 6px;
+    text-align: center;
+    background: var(--surface2);
+    transition: all 0.4s;
+  }
+
+  .mem-cell.writing {
+    border-color: rgba(248,113,113,0.4);
+    background: rgba(248,113,113,0.08);
+    animation: pulse-write 0.6s ease;
+  }
+
+  .mem-cell.written {
+    border-color: rgba(74,222,128,0.3);
+    background: rgba(74,222,128,0.07);
+  }
+
+  @keyframes pulse-write {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+
+  .mem-addr {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .mem-val {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    transition: color 0.4s;
+  }
+
+  .mem-cell.writing .mem-val { color: var(--accent-hw); }
+  .mem-cell.written .mem-val { color: var(--accent-py); }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 0.5px solid var(--border);
+  }
+
+  .btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 0.5px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .btn-back:hover:not(:disabled) { color: var(--text); border-color: var(--border2); }
+  .btn-back:disabled { opacity: 0.25; cursor: default; }
+
+  .btn-next {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 0.5px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .btn-next:hover:not(:disabled) { color: var(--text); border-color: var(--border2); }
+  .btn-next:active:not(:disabled) { transform: scale(0.98); }
+  .btn-next:disabled { opacity: 0.25; cursor: default; }
+
+  .btn-reset {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 0.5px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-reset:hover { color: var(--text); border-color: var(--border2); }
+
+  .progress-bar {
+    flex: 1;
+    height: 2px;
+    background: var(--border2);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-py), var(--accent-interp));
+    border-radius: 1px;
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  .step-count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* Footer */
+  .footer {
+    grid-column: 2;
+    padding: 16px 24px;
+    border-top: 0.5px solid var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Idle prompt */
+  .idle-hint {
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .idle-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-py);
+    animation: blink 1.4s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  /* Done state */
+  .done-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: rgba(74,222,128,0.1);
+    border: 0.5px solid rgba(74,222,128,0.2);
+    color: var(--accent-py);
+    font-family: var(--mono);
+    font-size: 11px;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: all 0.4s;
+  }
+  .done-badge.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<main class="main">
+  <header class="header">
+    <p class="header-label">Computer Science — Fundamentals</p>
+    <h1>What is a program, <em>really?</em></h1>
+    <p class="header-sub">
+      Trace how <span class="code-pill">x = 5 + 3</span> travels from your Python editor
+      all the way down to transistors in silicon.
+    </p>
+  </header>
+
+  <div class="content">
+    <!-- Left: Stack layers -->
+    <div class="stack" id="stack"></div>
+
+    <!-- Right: Detail panel -->
+    <div class="right-panel">
+      <div class="panel-card">
+        <div class="panel-header">
+          <span class="panel-title">Code at this layer</span>
+          <span class="panel-badge" id="panel-badge">—</span>
+        </div>
+        <div class="panel-body">
+          <div class="code-block" id="code-block">
+            <div class="idle-hint"><span class="idle-dot"></span> Waiting for first step</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-header">
+          <span class="panel-title">What's happening</span>
+        </div>
+        <div class="panel-body">
+          <div class="explain-text" id="explain-text">
+            Click <strong>Next step ↓</strong> below to start the walkthrough.
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-card" id="memory-panel" style="display:none;">
+        <div class="panel-header">
+          <span class="panel-title">RAM — address space</span>
+        </div>
+        <div class="panel-body">
+          <div class="memory-grid" id="memory-grid"></div>
+        </div>
+      </div>
+
+      <div class="done-badge" id="done-badge">✓ Abstraction stack complete</div>
+
+      <div class="controls">
+        <button class="btn-back" id="btn-back" onclick="prevStep()" disabled>← Back</button>
+        <button class="btn-next" id="btn-next" onclick="nextStep()">Next step ↓</button>
+        <button class="btn-reset" onclick="resetAll()">↺ Reset</button>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        <span class="step-count" id="step-count">0 / 5</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <span>abstraction stack — x = 5 + 3</span>
+  <span>click layers to jump</span>
+</footer>
+
+<script>
+const layers = [
+  {
+    name: "Python source code",
+    tag: "High-level",
+    hint: "Human-readable instruction",
+    color: "py",
+    codeLines: [
+      { ln: "1", html: `<span class="cm"># your source file</span>` },
+      { ln: "2", html: `<span class="kw">x</span> <span class="op">=</span> <span class="num">5</span> <span class="op">+</span> <span class="num">3</span>` },
+    ],
+    explain: `You type <code>x = 5 + 3</code>. That's it — Python handles everything else. Think of this like giving an instruction to a very smart assistant. You say <em>what</em> you want, not <em>how</em> to do it.`,
+  },
+  {
+    name: "Python interpreter",
+    tag: "Bytecode",
+    hint: "Parses, compiles, dispatches",
+    color: "interp",
+    codeLines: [
+      { ln: "1", html: `<span class="cm"># CPython bytecode (dis module)</span>` },
+      { ln: "2", html: `<span class="fn">LOAD_CONST</span>   <span class="num">5</span>` },
+      { ln: "3", html: `<span class="fn">LOAD_CONST</span>   <span class="num">3</span>` },
+      { ln: "4", html: `<span class="fn">BINARY_ADD</span>` },
+      { ln: "5", html: `<span class="fn">STORE_NAME</span>   <span class="kw">x</span>` },
+    ],
+    explain: `Python reads your code and breaks it into tiny steps called <strong>bytecode</strong>. It's like a recipe: grab 5, grab 3, add them together, save the result as <em>x</em>. You never see this — Python does it automatically.`,
+  },
+  {
+    name: "Machine code",
+    tag: "x86-64 ASM",
+    hint: "Binary CPU instructions",
+    color: "machine",
+    codeLines: [
+      { ln: "1", html: `<span class="cm">; native x86-64 instructions</span>` },
+      { ln: "2", html: `<span class="fn">MOV</span>  <span class="reg">rax</span><span class="op">,</span> <span class="num">5</span>` },
+      { ln: "3", html: `<span class="fn">ADD</span>  <span class="reg">rax</span><span class="op">,</span> <span class="num">3</span>` },
+      { ln: "4", html: `<span class="fn">MOV</span>  <span class="op">[</span><span class="addr">addr_x</span><span class="op">],</span> <span class="reg">rax</span>` },
+    ],
+    explain: `The bytecode gets translated into <strong>machine code</strong> — the only language the CPU actually understands. These are raw commands like "put 5 in slot A, add 3 to it." The CPU runs billions of these per second.`,
+  },
+  {
+    name: "Operating system",
+    tag: "Kernel",
+    hint: "Allocates memory, schedules CPU",
+    color: "os",
+    codeLines: [
+      { ln: "1", html: `<span class="cm"># OS kernel operations (simplified)</span>` },
+      { ln: "2", html: `alloc_virtual_page(<span class="addr">0x7ffc2a10</span>)` },
+      { ln: "3", html: `schedule_on_core(<span class="num">2</span>)` },
+      { ln: "4", html: `map_to_physical(<span class="addr">0x7ffc2a10</span>)` },
+    ],
+    explain: `Before anything runs, the <strong>OS</strong> steps in. It finds a free spot in RAM to store <em>x</em>, and gives your program a turn on the CPU. Think of it as a traffic controller — it keeps every app from crashing into each other.`,
+  },
+  {
+    name: "CPU + RAM hardware",
+    tag: "Silicon",
+    hint: "Electrons flip transistors",
+    color: "hw",
+    codeLines: [
+      { ln: "1", html: `<span class="cm">; memory write — final result</span>` },
+      { ln: "2", html: `<span class="addr">0x7ffc2a10</span> <span class="op">=</span> <span class="num">0x00000008</span>` },
+      { ln: "3", html: `` },
+      { ln: "4", html: `<span class="cm">; decimal 8 — stored in RAM</span>` },
+    ],
+    explain: `Finally, the CPU does the real math — adds 5 + 3 and gets <strong>8</strong>. That number gets saved into a tiny slot in RAM. At the lowest level, this is just electricity flipping billions of tiny switches (transistors) on and off.`,
+    isLast: true,
+  },
+];
+
+let current = -1;
+
+function buildStack() {
+  const stack = document.getElementById('stack');
+  stack.innerHTML = '';
+  layers.forEach((l, i) => {
+    const div = document.createElement('div');
+    div.className = 'layer';
+    div.dataset.layer = i;
+    div.onclick = () => goTo(i);
+
+    const colorMap = { py: '#4ade80', interp: '#60a5fa', machine: '#f59e0b', os: '#a78bfa', hw: '#f87171' };
+
+    div.innerHTML = `
+      <div class="layer-inner">
+        <div class="layer-line" style="position:relative;">
+          <div class="layer-dot"></div>
+        </div>
+        <div class="layer-body">
+          <div class="layer-card">
+            <div class="layer-top">
+              <div class="layer-num">${i + 1}</div>
+              <span class="layer-name">${l.name}</span>
+              <span class="layer-tag">${l.tag}</span>
+            </div>
+            <div class="layer-hint">${l.hint}</div>
+          </div>
+        </div>
+      </div>
+    `;
+    stack.appendChild(div);
+  });
+
+  buildMemory();
+}
+
+function buildMemory() {
+  const grid = document.getElementById('memory-grid');
+  grid.innerHTML = '';
+  const cells = [
+    { addr: '0x...10', val: '??', id: 'cell-x' },
+    { addr: '0x...14', val: '??' },
+    { addr: '0x...18', val: '??' },
+    { addr: '0x...1c', val: '??' },
+    { addr: '0x...20', val: '??' },
+    { addr: '0x...24', val: '??' },
+    { addr: '0x...28', val: '??' },
+    { addr: '0x...2c', val: '??' },
+  ];
+  cells.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'mem-cell';
+    if (c.id) el.id = c.id;
+    el.innerHTML = `<div class="mem-addr">${c.addr}</div><div class="mem-val">${c.val}</div>`;
+    grid.appendChild(el);
+  });
+}
+
+function setLayerState(i, state) {
+  const el = document.querySelector(`.layer[data-layer="${i}"]`);
+  if (!el) return;
+  el.classList.remove('active', 'done');
+  if (state) el.classList.add(state);
+}
+
+function showCode(layer) {
+  const block = document.getElementById('code-block');
+  block.innerHTML = '';
+  const colorMap = { py: '#4ade80', interp: '#60a5fa', machine: '#f59e0b', os: '#a78bfa', hw: '#f87171' };
+
+  layer.codeLines.forEach((line, i) => {
+    const el = document.createElement('div');
+    el.className = 'code-line';
+    el.innerHTML = `<span class="code-ln">${line.ln}</span><span class="code-text">${line.html}</span>`;
+    block.appendChild(el);
+    setTimeout(() => el.classList.add('visible'), i * 80);
+  });
+
+  const badge = document.getElementById('panel-badge');
+  const c = colorMap[layer.color];
+  badge.textContent = layer.tag;
+  badge.style.background = c + '18';
+  badge.style.color = c;
+  badge.style.border = `0.5px solid ${c}33`;
+}
+
+function showExplain(layer) {
+  const el = document.getElementById('explain-text');
+  el.style.opacity = '0';
+  setTimeout(() => {
+    el.innerHTML = layer.explain;
+    el.style.opacity = '1';
+  }, 150);
+}
+
+function activateMemory() {
+  document.getElementById('memory-panel').style.display = 'block';
+  setTimeout(() => {
+    const cell = document.getElementById('cell-x');
+    cell.classList.add('writing');
+    cell.querySelector('.mem-val').textContent = '0x08';
+    setTimeout(() => {
+      cell.classList.remove('writing');
+      cell.classList.add('written');
+      cell.querySelector('.mem-val').textContent = '8 ✓';
+    }, 700);
+  }, 400);
+}
+
+// current = -1 means idle (nothing active yet)
+// current = 0..4 means that layer is active
+
+function goTo(target) {
+  // Clamp
+  if (target < 0 || target > layers.length - 1) return;
+
+  // Update layer cards
+  layers.forEach((_, i) => {
+    if (i < target) setLayerState(i, 'done');
+    else if (i === target) setLayerState(i, 'active');
+    else setLayerState(i, null);
+  });
+
+  current = target;
+
+  // Update right panel
+  showCode(layers[current]);
+  showExplain(layers[current]);
+
+  // Progress: step N of total, 1-based
+  const stepNum = current + 1;           // 1 to 5
+  const pct = (stepNum / layers.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('step-count').textContent = `${stepNum} / ${layers.length}`;
+
+  // Memory panel — only on last step
+  if (layers[current].isLast) {
+    document.getElementById('memory-panel').style.display = 'block';
+    activateMemory();
+    document.getElementById('done-badge').classList.add('visible');
+  } else {
+    document.getElementById('memory-panel').style.display = 'none';
+    document.getElementById('done-badge').classList.remove('visible');
+    buildMemory();
+  }
+
+  // Buttons
+  document.getElementById('btn-back').disabled = current === 0;
+  const btnNext = document.getElementById('btn-next');
+  if (layers[current].isLast) {
+    btnNext.disabled = true;
+    btnNext.textContent = 'Done ✓';
+  } else {
+    btnNext.disabled = false;
+    btnNext.textContent = 'Next step ↓';
+  }
+}
+
+function nextStep() {
+  if (current >= layers.length - 1) return;
+  goTo(current + 1);
+}
+
+function prevStep() {
+  if (current <= 0) return;
+  goTo(current - 1);
+}
+
+function resetAll() {
+  current = -1;
+  layers.forEach((_, i) => setLayerState(i, null));
+  document.getElementById('code-block').innerHTML = `<div class="idle-hint"><span class="idle-dot"></span> Waiting for first step</div>`;
+  document.getElementById('explain-text').innerHTML = `Click <strong>Next step ↓</strong> below to start the walkthrough.`;
+  document.getElementById('panel-badge').textContent = '—';
+  document.getElementById('panel-badge').style = '';
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('step-count').textContent = `0 / ${layers.length}`;
+  document.getElementById('btn-next').disabled = false;
+  document.getElementById('btn-next').textContent = 'Next step ↓';
+  document.getElementById('btn-back').disabled = true;
+  document.getElementById('memory-panel').style.display = 'none';
+  document.getElementById('done-badge').classList.remove('visible');
+  buildMemory();
+}
+
+buildStack();
+</script>
+</body>
+</html>

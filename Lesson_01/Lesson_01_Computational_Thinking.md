@@ -19,7 +19,7 @@ By the end of this lesson, you will be able to:
 
 Most people think of a program as an app or a file you double-click. That's the surface level. At its core, **a program is a sequence of instructions that manipulates data in memory to produce a desired outcome**.
 
-Every program — whether it's a web server, a mobile game, or a machine learning model — is ultimately:
+Every program — whether it's a web server, a mobile game, or a machine learning model — is ultimately (Input-Process-Output):
 
 1. **Loading data** into memory (RAM)
 2. **Processing it** using CPU instructions
@@ -42,12 +42,15 @@ CPU + RAM + I/O Hardware
 ```
 
 When you write `x = 5 + 3` in Python:
+
 - The interpreter parses the expression
 - Allocates a memory address for `x`
 - Performs integer addition via CPU arithmetic unit
 - Stores the result (`8`) at that memory address
 
 You never see this — and that's the point of abstraction. **Higher-level languages trade control for productivity**.
+
+[preview](./abstraction_stack_1.html)
 
 ---
 
@@ -57,14 +60,15 @@ You never see this — and that's the point of abstraction. **Higher-level langu
 
 Computers operate on binary because transistors have two stable states: **on (1)** and **off (0)**. Everything — text, images, audio, video, code — is encoded in binary.
 
-| Concept | Explanation |
-|---|---|
-| **Bit** | Single binary digit: 0 or 1 |
-| **Byte** | 8 bits — can represent 256 values (2⁸) |
-| **Integer** | Typically 32 or 64 bits |
-| **Character** | Encoded as a number (ASCII / UTF-8) |
+| Concept       | Explanation                            |
+| ------------- | -------------------------------------- |
+| **Bit**       | Single binary digit: 0 or 1            |
+| **Byte**      | 8 bits — can represent 256 values (2⁸) |
+| **Integer**   | Typically 32 or 64 bits                |
+| **Character** | Encoded as a number (ASCII / UTF-8)    |
 
 Example — the letter `A`:
+
 - ASCII value: 65
 - Binary: `01000001`
 - Hex: `0x41`
@@ -74,6 +78,7 @@ This matters when you encounter encoding bugs, file corruption, or work with low
 ### Memory (RAM)
 
 RAM is a massive array of byte-addressable locations. Each location has:
+
 - A **memory address** (a number, usually in hexadecimal)
 - A **value** stored at that address (bytes)
 
@@ -91,6 +96,7 @@ Python wraps all this in objects: every value in Python is an object with a type
 ### The CPU — Fetch, Decode, Execute
 
 The CPU runs on a cycle:
+
 1. **Fetch** — retrieve the next instruction from memory
 2. **Decode** — determine what operation it is (add, compare, jump, etc.)
 3. **Execute** — perform the operation using registers and ALU
@@ -105,14 +111,15 @@ Key implication for programmers: **algorithms matter**. A poorly written algorit
 
 Not all languages are equal in terms of what they expose to you:
 
-| Level | Language | Control | Abstraction | Use Case |
-|---|---|---|---|---|
-| Low-level | Assembly, C | Full hardware control | Minimal | OS kernels, embedded systems |
-| Mid-level | C++, Rust | Manual memory, high perf | Moderate | Game engines, system tools |
-| High-level | Python, JavaScript | Managed automatically | High | Web, data science, automation |
-| Domain-specific | SQL, HTML, CSS | Narrow scope | Very high | Databases, web layout |
+| Level           | Language           | Control                  | Abstraction | Use Case                      |
+| --------------- | ------------------ | ------------------------ | ----------- | ----------------------------- |
+| Low-level       | Assembly, C        | Full hardware control    | Minimal     | OS kernels, embedded systems  |
+| Mid-level       | C++, Rust          | Manual memory, high perf | Moderate    | Game engines, system tools    |
+| High-level      | Python, JavaScript | Managed automatically    | High        | Web, data science, automation |
+| Domain-specific | SQL, HTML, CSS     | Narrow scope             | Very high   | Databases, web layout         |
 
 **Why does this matter to you?** When Python code is "slow," it's often because:
+
 - You're doing something Python's interpreter handles inefficiently
 - A lower-level library (like NumPy, written in C) would be orders of magnitude faster
 - Understanding the layers helps you make better tool choices
@@ -128,6 +135,7 @@ The skill gap between a beginner and an experienced developer is not syntax — 
 Break complex problems into smaller, independently solvable sub-problems.
 
 **Example:** Build a login system
+
 - Validate email format
 - Check password strength
 - Query the database for the user
@@ -146,6 +154,7 @@ When you call `len(my_list)` in Python, you don't think about how Python interna
 ### 4.3 Pattern Recognition
 
 Most software problems have been solved before. Recognizing patterns allows you to:
+
 - Apply known algorithms (sorting, searching, caching)
 - Use design patterns (observer, factory, MVC)
 - Avoid reinventing solutions
@@ -173,18 +182,21 @@ Let's apply the programming mindset to a real scenario before writing any code.
 **Scenario:** Build a system that checks if a username is available for registration.
 
 **Step 1 — Decompose:**
+
 - Receive a username input
 - Validate it meets format requirements (length, allowed characters)
 - Check against existing usernames in a data store
 - Return an appropriate response
 
 **Step 2 — Identify edge cases:**
+
 - Empty string input
 - Usernames with special characters (`@`, spaces)
 - Case sensitivity (is `John` the same as `john`?)
 - Very long inputs (potential buffer issues)
 
 **Step 3 — Define data flow:**
+
 ```
 Input: string
   → validate format → reject if invalid
@@ -194,6 +206,7 @@ Input: string
 ```
 
 **Step 4 — Consider failure modes:**
+
 - What if the database is unreachable?
 - What if validation takes too long?
 - What if two users request the same username simultaneously?
@@ -204,15 +217,16 @@ This kind of thinking — before a single line of code — is what separates goo
 
 ## 6. Key Vocabulary
 
-| Term | Definition |
-|---|---|
-| **Runtime** | The environment in which code is executed (e.g., Python runtime, Node.js) |
-| **Compilation** | Translating source code to machine code before execution |
-| **Interpretation** | Translating and executing code line-by-line at runtime |
-| **Heap** | Region of memory for dynamic allocation (objects, data structures) |
-| **Stack** | Region of memory for function calls and local variables |
-| **Register** | Ultra-fast CPU-internal storage for immediate operations |
-| **Abstraction** | Hiding complexity behind a simplified interface |
+| Term               | Definition                                                                                                                    |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Runtime**        | The environment in which code is executed (e.g., Python runtime, Node.js)                                                     |
+| **Compilation**    | The process of translating high-level source code into machine code all at once before the program starts.                    |
+| **Interpretation** | The process of translating and executing code "on the fly," line-by-line, by a source-code-reading program (the interpreter). |
+| **Machine Code**   | The lowest-level instructions (binary) that a CPU can execute directly without further translation.                           |
+| **Memory Address** | A unique identifier (usually hexadecimal) that points to a specific location in RAM where data is stored.                     |
+| **Heap**           | Region of memory for dynamic allocation (objects, data structures)                                                            |
+| **Stack**          | Region of memory for function calls and local variables                                                                       |
+| **Abstraction**    | Hiding complexity behind a simplified interface                                                                               |
 
 ---
 
@@ -235,4 +249,4 @@ This kind of thinking — before a single line of code — is what separates goo
 
 ---
 
-*Next: Lesson 02 — Algorithms & Problem Solving*
+_Next: Lesson 02 — Algorithms & Problem Solving_
