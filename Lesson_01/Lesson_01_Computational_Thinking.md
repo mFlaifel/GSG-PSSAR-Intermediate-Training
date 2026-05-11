@@ -50,7 +50,7 @@ When you write `x = 5 + 3` in Python:
 
 You never see this — and that's the point of abstraction. **Higher-level languages trade control for productivity**.
 
-[preview](./abstraction_stack_1.html)
+[live example](https://mflaifel.github.io/GSG-PSSAR-Intermediate-Training/Lesson_01/abstraction_stack_1.html)
 
 ---
 
