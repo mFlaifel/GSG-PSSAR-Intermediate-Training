@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Python Hash Table Demo</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 40px;
+      color: #222;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .input-area {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    input {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 12px 20px;
+      border: none;
+      background: #2563eb;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .hash-result {
+      margin-bottom: 30px;
+      font-size: 18px;
+    }
+
+    .table {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 10px;
+    }
+
+    .bucket {
+      background: #e5e7eb;
+      padding: 20px 10px;
+      border-radius: 10px;
+      text-align: center;
+      min-height: 80px;
+      position: relative;
+      transition: 0.3s;
+    }
+
+    .bucket.active {
+      background: #93c5fd;
+      transform: scale(1.05);
+    }
+
+    .bucket-number {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .key {
+      background: white;
+      padding: 5px;
+      border-radius: 5px;
+      margin-top: 5px;
+      font-size: 14px;
+    }
+
+    .explanation {
+      margin-top: 30px;
+      line-height: 1.7;
+      background: #f9fafb;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    code {
+      background: #e5e7eb;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Python Dictionary Hashing</h1>
+
+    <div class="input-area">
+      <input type="text" id="keyInput" placeholder='Type a key like "alice"' />
+      <button onclick="simulateHash()">Hash Key</button>
+    </div>
+
+    <div class="hash-result" id="result">
+      Enter a key to see how hashing works.
+    </div>
+
+    <div class="table" id="table"></div>
+
+    <div class="explanation">
+      <h3>How it works</h3>
+
+      <p>
+        Python dictionaries use a <strong>hash table</strong>.
+      </p>
+
+      <p>
+        When you access:
+      </p>
+
+      <p>
+        <code>users["alice"]</code>
+      </p>
+
+      <p>
+        Python computes a hash of <code>"alice"</code>, converts it into
+        an index, then jumps directly to that location in memory.
+      </p>
+
+      <p>
+        This is why dictionary lookup is usually:
+      </p>
+
+      <p>
+        <strong>O(1) — constant time</strong>
+      </p>
+
+      <p>
+        regardless of how large the dictionary becomes.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const table = document.getElementById("table");
+
+    // Create 10 buckets
+    for (let i = 0; i < 10; i++) {
+      const bucket = document.createElement("div");
+      bucket.className = "bucket";
+      bucket.id = "bucket-" + i;
+
+      bucket.innerHTML = `
+        <div class="bucket-number">Bucket ${i}</div>
+      `;
+
+      table.appendChild(bucket);
+    }
+
+    function simpleHash(str) {
+      let hash = 0;
+
+      for (let i = 0; i < str.length; i++) {
+        hash += str.charCodeAt(i);
+      }
+
+      return hash;
+    }
+
+    function simulateHash() {
+      const key = document.getElementById("keyInput").value;
+
+      if (!key) return;
+
+      // Remove previous active states
+      document.querySelectorAll(".bucket").forEach(b => {
+        b.classList.remove("active");
+      });
+
+      const hash = simpleHash(key);
+      const bucketIndex = hash % 10;
+
+      const bucket = document.getElementById("bucket-" + bucketIndex);
+
+      bucket.classList.add("active");
+
+      const keyDiv = document.createElement("div");
+      keyDiv.className = "key";
+      keyDiv.textContent = key;
+
+      bucket.appendChild(keyDiv);
+
+      document.getElementById("result").innerHTML = `
+        Key: <strong>${key}</strong><br>
+        Hash Value: <strong>${hash}</strong><br>
+        Bucket Index: <strong>${bucketIndex}</strong>
+      `;
+    }
+  </script>
+
+</body>
+</html>

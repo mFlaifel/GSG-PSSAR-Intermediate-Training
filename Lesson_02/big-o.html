@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big-O Notation — Interactive Lecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #0a0c10;
+    --bg2:       #111318;
+    --bg3:       #181c24;
+    --border:    rgba(255,255,255,0.07);
+    --border2:   rgba(255,255,255,0.12);
+    --text:      #e8eaf0;
+    --muted:     #7a7f91;
+    --accent:    #7c6ef5;
+    --accent2:   #a78bfa;
+    --green:     #34d399;
+    --amber:     #fbbf24;
+    --red:       #f87171;
+    --blue:      #60a5fa;
+    --pink:      #f472b6;
+    --teal:      #2dd4bf;
+    --mono:      'DM Mono', monospace;
+    --sans:      'Syne', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── grid bg ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(124,110,245,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,110,245,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* ── header ── */
+  .site-header { text-align: center; margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+  .site-header .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .15em; color: var(--accent2); text-transform: uppercase; margin-bottom: .75rem; }
+  .site-header h1 { font-size: clamp(2rem,5vw,3.2rem); font-weight: 800; line-height: 1.1; letter-spacing: -.02em; }
+  .site-header h1 span { color: var(--accent2); }
+  .site-header .desc { font-size: 15px; color: var(--muted); margin-top: .75rem; line-height: 1.6; max-width: 500px; margin-left: auto; margin-right: auto; }
+
+  /* ── complexity selector ── */
+  .complexity-nav { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 2rem; }
+  .cn-btn {
+    font-family: var(--mono); font-size: 12px; font-weight: 500;
+    padding: 7px 16px; border-radius: 6px;
+    border: 1px solid var(--border2);
+    background: var(--bg2);
+    color: var(--muted);
+    cursor: pointer; transition: all .2s;
+    letter-spacing: .03em;
+  }
+  .cn-btn:hover { border-color: var(--border2); color: var(--text); background: var(--bg3); }
+  .cn-btn.active { color: #0a0c10; font-weight: 600; border-color: transparent; }
+
+  /* ── main panel ── */
+  .panel {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+
+  .panel-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    gap: 1rem; flex-wrap: wrap;
+  }
+  .panel-title-wrap { display: flex; align-items: center; gap: 12px; }
+  .panel-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 13px; font-weight: 500; flex-shrink: 0; }
+  .panel-title { font-size: 18px; font-weight: 700; letter-spacing: -.01em; }
+  .panel-tagline { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .complexity-badge { font-family: var(--mono); font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; letter-spacing: .04em; }
+
+  /* ── tabs ── */
+  .tabs { display: flex; border-bottom: 1px solid var(--border); }
+  .tab-btn {
+    font-family: var(--mono); font-size: 12px; padding: 10px 18px;
+    background: none; border: none; color: var(--muted); cursor: pointer;
+    border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all .2s;
+    letter-spacing: .04em;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--text); border-bottom-color: currentColor; }
+
+  .tab-pane { display: none; padding: 1.5rem; }
+  .tab-pane.active { display: block; }
+
+  /* ── explanation ── */
+  .expl-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
+  @media(max-width:600px){ .expl-row { grid-template-columns: 1fr; } }
+
+  .fact-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
+  .fact-card .label { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+  .fact-card .value { font-size: 14px; color: var(--text); line-height: 1.5; }
+  .fact-card .value strong { font-weight: 600; }
+
+  .expl-body { font-size: 14px; color: var(--muted); line-height: 1.8; margin-bottom: 1rem; }
+  .expl-body strong { color: var(--text); font-weight: 500; }
+
+  .scale-table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: var(--mono); margin-top: 1rem; }
+  .scale-table th { color: var(--muted); font-size: 11px; letter-spacing: .06em; padding: 6px 10px; text-align: right; border-bottom: 1px solid var(--border); font-weight: 400; }
+  .scale-table th:first-child { text-align: left; }
+  .scale-table td { padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--border); color: var(--text); }
+  .scale-table td:first-child { text-align: left; color: var(--muted); }
+  .scale-table tr:last-child td { border-bottom: none; }
+  .scale-table .danger { color: var(--red); }
+  .scale-table .warn { color: var(--amber); }
+  .scale-table .ok { color: var(--green); }
+
+  /* ── stepper ── */
+  .step-progress { display: flex; align-items: center; gap: 6px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .step-dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 11px; font-weight: 500;
+    border: 1px solid var(--border2); color: var(--muted); background: var(--bg3);
+    cursor: pointer; transition: all .25s;
+  }
+  .step-dot.done { background: rgba(124,110,245,.15); border-color: rgba(124,110,245,.4); color: var(--accent2); }
+  .step-dot.current { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .step-line { flex: 1; height: 1px; background: var(--border); min-width: 8px; }
+
+  .step-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+  .step-card .step-label { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; margin-bottom: .5rem; }
+  .step-card .step-title { font-size: 15px; font-weight: 600; margin-bottom: .5rem; }
+  .step-card .step-body { font-size: 14px; color: var(--muted); line-height: 1.7; }
+  .step-card .step-body strong { color: var(--text); font-weight: 500; }
+
+  /* visual area */
+  .step-visual { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; margin: 1rem 0; min-height: 60px; display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; overflow: hidden; }
+  .vis-box { display: flex; align-items: center; justify-content: center; border-radius: 6px; font-family: var(--mono); font-weight: 500; transition: all .35s; flex-shrink: 0; }
+
+  .step-nav { display: flex; gap: 8px; align-items: center; }
+  .nav-btn {
+    font-family: var(--mono); font-size: 12px; padding: 7px 16px;
+    border-radius: 7px; border: 1px solid var(--border2);
+    background: var(--bg3); color: var(--text);
+    cursor: pointer; transition: all .2s; letter-spacing: .03em;
+  }
+  .nav-btn:hover:not(:disabled) { background: var(--bg); border-color: var(--border2); }
+  .nav-btn:disabled { opacity: .3; cursor: default; }
+  .nav-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .nav-btn.primary:hover { opacity: .85; }
+  .nav-btn.danger { background: rgba(248,113,113,.1); border-color: rgba(248,113,113,.3); color: var(--red); }
+  .step-counter { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-left: auto; }
+
+  /* code block */
+  .code-wrap { position: relative; }
+  .code-block {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 1.25rem 1.25rem 1.25rem 1.5rem;
+    font-family: var(--mono); font-size: 13px; line-height: 1.8;
+    overflow-x: auto; white-space: pre;
+    color: #c4c9d8;
+    tab-size: 2;
+  }
+  .code-block .kw  { color: #c792ea; }
+  .code-block .fn  { color: #82aaff; }
+  .code-block .str { color: #c3e88d; }
+  .code-block .num { color: #f78c6c; }
+  .code-block .cmt { color: #546e7a; font-style: italic; }
+  .code-block .hl  { background: rgba(124,110,245,.2); border-left: 3px solid var(--accent); margin-left: -1.25rem; padding-left: calc(1.25rem - 3px); display: block; }
+
+  .code-lang { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+
+  /* real-world examples */
+  .rw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 10px; }
+  .rw-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
+  .rw-card .rw-icon { font-size: 22px; margin-bottom: 6px; }
+  .rw-card .rw-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .rw-card .rw-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* complexity comparison bar */
+  .cmp-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-family: var(--mono); font-size: 12px; }
+  .cmp-label { width: 90px; text-align: right; color: var(--muted); flex-shrink: 0; }
+  .cmp-bar-wrap { flex: 1; background: var(--border); border-radius: 4px; height: 10px; overflow: hidden; }
+  .cmp-bar { height: 100%; border-radius: 4px; transition: width .5s .1s; }
+  .cmp-val { width: 60px; flex-shrink: 0; color: var(--muted); font-size: 11px; }
+
+  /* callout */
+  .callout { display: flex; gap: 10px; padding: 12px 14px; border-radius: 10px; font-size: 13px; line-height: 1.6; margin: 1rem 0; }
+  .callout.info { background: rgba(96,165,250,.08); border: 1px solid rgba(96,165,250,.2); color: var(--blue); }
+  .callout.warn { background: rgba(251,191,36,.08); border: 1px solid rgba(251,191,36,.2); color: var(--amber); }
+  .callout.success { background: rgba(52,211,153,.08); border: 1px solid rgba(52,211,153,.2); color: var(--green); }
+  .callout.danger { background: rgba(248,113,113,.08); border: 1px solid rgba(248,113,113,.2); color: var(--red); }
+  .callout-icon { font-size: 16px; flex-shrink: 0; }
+
+  /* ── animations ── */
+  @keyframes pop { 0%{transform:scale(.7);opacity:0} 70%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+  .pop { animation: pop .35s ease forwards; }
+  .pulsing { animation: pulse 1s ease infinite; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="eyebrow">Algorithms & Problem Solving · Lesson 02</div>
+    <h1>Big-O Notation<br><span>Interactive Lecture</span></h1>
+    <p class="desc">Step through each complexity class with animated examples, code snippets, and real-world analogies.</p>
+  </header>
+
+  <!-- Complexity nav -->
+  <nav class="complexity-nav" id="complexity-nav"></nav>
+
+  <!-- Main panel -->
+  <div class="panel" id="main-panel">
+    <div class="panel-header">
+      <div class="panel-title-wrap">
+        <div class="panel-icon" id="panel-icon"></div>
+        <div>
+          <div class="panel-title" id="panel-title"></div>
+          <div class="panel-tagline" id="panel-tagline"></div>
+        </div>
+      </div>
+      <div class="complexity-badge" id="panel-badge"></div>
+    </div>
+
+    <div class="tabs" id="tabs">
+      <button class="tab-btn active" data-tab="explain">Explain</button>
+      <button class="tab-btn" data-tab="steps">Step-by-Step</button>
+      <button class="tab-btn" data-tab="code">Code</button>
+      <button class="tab-btn" data-tab="realworld">Real World</button>
+    </div>
+
+    <div class="tab-pane active" id="tab-explain"></div>
+    <div class="tab-pane" id="tab-steps"></div>
+    <div class="tab-pane" id="tab-code"></div>
+    <div class="tab-pane" id="tab-realworld"></div>
+  </div>
+
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════
+// DATA
+// ════════════════════════════════════════════════════════
+const COMPLEXITIES = [
+  {
+    id: 'o1',
+    label: 'O(1)',
+    name: 'Constant Time',
+    tagline: 'Same speed no matter how big the input.',
+    color: '#34d399',
+    fn: n => 1,
+    icon: '⚡',
+    badgeStyle: 'background:rgba(52,211,153,.15);color:#34d399',
+    iconStyle: 'background:rgba(52,211,153,.15);color:#34d399',
+
+    explain: {
+      what: 'No matter how large your input is — 10 items or 10 billion — the algorithm always does <strong>the same amount of work</strong>.',
+      why: 'Usually achieved by direct indexing or hashing: you jump straight to the answer without scanning anything.',
+      scale: [
+        { n:'10',    ops:'1' },
+        { n:'1,000', ops:'1' },
+        { n:'1,000,000', ops:'1' },
+        { n:'1,000,000,000', ops:'1' },
+      ],
+      callout: { type:'success', text:'The holy grail. Always aim for O(1) when you can.' }
+    },
+
+    steps: [
+      {
+        title: 'The problem',
+        body: 'We want to find the user with ID <strong>"alice"</strong> in our database. The database has 1 million users.',
+        visual: () => boxes(['10','1000','1M','1B'], ['var(--bg3)','var(--bg3)','var(--bg3)','var(--bg3)'], 44, 44, '#7a7f91'),
+        highlight: null
+      },
+      {
+        title: 'Using a hash table (dictionary)',
+        body: 'Instead of scanning every user, we store users in a <strong>hash table</strong>. We compute a hash of "alice" to get the exact memory address.',
+        visual: () => hashVis('alice', false),
+        highlight: 1
+      },
+      {
+        title: 'Direct jump — one operation',
+        body: 'We jump <strong>directly</strong> to the bucket for "alice". No scanning. No loops. <strong>Always 1 operation</strong>, regardless of table size.',
+        visual: () => hashVis('alice', true),
+        highlight: 2
+      },
+      {
+        title: 'Same speed at any scale',
+        body: 'Whether the table has 10 or 10 billion entries, this lookup is still <strong>1 step</strong>. That\'s O(1).',
+        visual: () => constBars(),
+        highlight: 3
+      },
+    ],
+
+    codes: [
+      {
+        lang: 'Python — Dictionary lookup',
+        code: `<span class="cmt"># O(1) — Hash table / dictionary lookup</span>
+<span class="cmt"># Building the lookup table — done once</span>
+users = {
+    <span class="str">"alice"</span>: {<span class="str">"age"</span>: <span class="num">28</span>, <span class="str">"role"</span>: <span class="str">"admin"</span>},
+    <span class="str">"bob"</span>:   {<span class="str">"age"</span>: <span class="num">34</span>, <span class="str">"role"</span>: <span class="str">"editor"</span>},
+    <span class="cmt"># ... 1 million more users ...</span>
+}
+
+<span class="cmt"># O(1) — no matter how large users is</span>
+<span class="kw">def</span> <span class="fn">get_user</span>(user_id):
+<span class="hl">    <span class="kw">return</span> users[user_id]          <span class="cmt"># direct hash lookup</span></span>
+
+result = <span class="fn">get_user</span>(<span class="str">"alice"</span>)
+<span class="fn">print</span>(result)  <span class="cmt"># {'age': 28, 'role': 'admin'}</span>
+
+<span class="cmt"># More O(1) examples:</span>
+arr = [<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>]
+first = arr[<span class="num">0</span>]          <span class="cmt"># O(1) — index access</span>
+last  = arr[-<span class="num">1</span>]         <span class="cmt"># O(1)</span>
+size  = <span class="fn">len</span>(arr)         <span class="cmt"># O(1) — Python stores length</span>
+arr.<span class="fn">append</span>(<span class="num">60</span>)          <span class="cmt"># O(1) amortised</span>`
+      }
+    ],
+
+    realworld: [
+      { icon:'🗃️', name:'Dictionary lookup', desc:'Find a word\'s definition instantly — the book is sorted alphabetically so you jump right to the page.' },
+      { icon:'📍', name:'Array index access', desc:'arr[42] always takes the same time — the CPU calculates the memory address directly.' },
+      { icon:'🔑', name:'Hash map get/set', desc:'Python dict, JavaScript object, Java HashMap — all O(1) average case.' },
+      { icon:'🃏', name:'Stack push/pop', desc:'Adding or removing the top card from a stack is always one operation.' },
+    ]
+  },
+
+  // ── O(log n) ──────────────────────────────────────────
+  {
+    id: 'ologn',
+    label: 'O(log n)',
+    name: 'Logarithmic Time',
+    tagline: 'Each step cuts the problem in half.',
+    color: '#60a5fa',
+    fn: n => Math.log2(n),
+    icon: '✂️',
+    badgeStyle: 'background:rgba(96,165,250,.15);color:#60a5fa',
+    iconStyle: 'background:rgba(96,165,250,.15);color:#60a5fa',
+
+    explain: {
+      what: 'Every step <strong>halves the remaining search space</strong>. To find one item in 1 billion, you only need about 30 steps.',
+      why: 'This is the power of divide-and-conquer. Binary search is the classic example — it requires sorted data.',
+      scale: [
+        { n:'10',    ops:'~3' },
+        { n:'1,000', ops:'~10' },
+        { n:'1,000,000', ops:'~20' },
+        { n:'1,000,000,000', ops:'~30' },
+      ],
+      callout: { type:'success', text:'Incredibly powerful for large datasets. Doubling the data adds only 1 extra step.' }
+    },
+
+    steps: [
+      {
+        title: 'Setup: sorted list',
+        body: 'Binary search <strong>requires sorted data</strong>. Here\'s our sorted list. We\'re looking for <strong>target = 31</strong>.',
+        visual: () => bsVis([2,5,8,12,16,23,31,38,42,56], -1, -1, -1, []),
+        highlight: null
+      },
+      {
+        title: 'Step 1 — Check the middle',
+        body: 'low=0, high=9 → <strong>mid = 4</strong>. list[4] = 16. Since 31 > 16, we discard the <strong>left half</strong>.',
+        visual: () => bsVis([2,5,8,12,16,23,31,38,42,56], 4, 0, 9, [0,1,2,3]),
+        highlight: 1
+      },
+      {
+        title: 'Step 2 — New search space',
+        body: 'low=5, high=9 → <strong>mid = 7</strong>. list[7] = 38. Since 31 < 38, we discard the <strong>right half</strong>.',
+        visual: () => bsVis([2,5,8,12,16,23,31,38,42,56], 7, 5, 9, [0,1,2,3,8,9]),
+        highlight: 1
+      },
+      {
+        title: 'Step 3 — Found!',
+        body: 'low=5, high=6 → <strong>mid = 5</strong>. list[5] = 23. Since 31 > 23, low = 6. mid = 6. <strong>list[6] = 31 ✓</strong>',
+        visual: () => bsVis([2,5,8,12,16,23,31,38,42,56], 6, 6, 6, [0,1,2,3,4,7,8,9], true),
+        highlight: 2
+      },
+      {
+        title: 'Result: 3 steps for 10 items',
+        body: 'For 1 <strong>billion</strong> sorted items, binary search finds any value in at most <strong>30 steps</strong>. Linear search would need up to 1 billion steps.',
+        visual: () => logBars(),
+        highlight: 3
+      },
+    ],
+
+    codes: [
+      {
+        lang: 'Python — Binary Search',
+        code: `<span class="cmt"># O(log n) — Binary Search (requires sorted list)</span>
+<span class="kw">def</span> <span class="fn">binary_search</span>(arr, target):
+    low, high = <span class="num">0</span>, <span class="fn">len</span>(arr) - <span class="num">1</span>
+    steps = <span class="num">0</span>
+
+    <span class="kw">while</span> low <= high:
+        steps += <span class="num">1</span>
+<span class="hl">        mid = (low + high) // <span class="num">2</span>         <span class="cmt"># halve the search space</span></span>
+
+        <span class="kw">if</span> arr[mid] == target:
+            <span class="kw">return</span> mid, steps            <span class="cmt"># found!</span>
+        <span class="kw">elif</span> arr[mid] < target:
+            low = mid + <span class="num">1</span>               <span class="cmt"># discard left half</span>
+        <span class="kw">else</span>:
+            high = mid - <span class="num">1</span>              <span class="cmt"># discard right half</span>
+
+    <span class="kw">return</span> -<span class="num">1</span>, steps                  <span class="cmt"># not found</span>
+
+<span class="cmt"># Test it</span>
+data = <span class="fn">list</span>(<span class="fn">range</span>(<span class="num">0</span>, <span class="num">1000000</span>, <span class="num">2</span>))      <span class="cmt"># 500k sorted even numbers</span>
+idx, n = <span class="fn">binary_search</span>(data, <span class="num">499998</span>)
+<span class="fn">print</span>(<span class="str">f"Found at index {idx} in {n} steps"</span>)
+<span class="cmt"># Found at index 249999 in 19 steps  ← log₂(500000) ≈ 19</span>`
+      }
+    ],
+
+    realworld: [
+      { icon:'📖', name:'Dictionary search', desc:'You open to the middle, decide which half has your word, repeat. That\'s binary search.' },
+      { icon:'🌳', name:'Binary search tree', desc:'Database indexes use BSTs to find records in O(log n) even with millions of rows.' },
+      { icon:'🎯', name:'Git bisect', desc:'To find a bug, git bisect checks the middle commit. Each step halves the suspect range.' },
+      { icon:'📊', name:'Database B-tree index', desc:'PostgreSQL/MySQL indexes are B-trees — O(log n) for lookups even on billion-row tables.' },
+    ]
+  },
+
+  // ── O(n) ──────────────────────────────────────────────
+  {
+    id: 'on',
+    label: 'O(n)',
+    name: 'Linear Time',
+    tagline: 'Double the input, double the work.',
+    color: '#fbbf24',
+    fn: n => n,
+    icon: '📏',
+    badgeStyle: 'background:rgba(251,191,36,.15);color:#fbbf24',
+    iconStyle: 'background:rgba(251,191,36,.15);color:#fbbf24',
+
+    explain: {
+      what: 'The algorithm visits each element <strong>exactly once</strong>. Time grows in direct proportion to input size.',
+      why: 'Any algorithm that needs to examine every element at least once is O(n) at best. This is often the minimum possible complexity.',
+      scale: [
+        { n:'10',    ops:'10' },
+        { n:'1,000', ops:'1,000' },
+        { n:'1,000,000', ops:'1,000,000' },
+        { n:'1,000,000,000', ops:'1,000,000,000' },
+      ],
+      callout: { type:'info', text:'Often the best you can do when every element must be checked. Very acceptable in practice.' }
+    },
+
+    steps: [
+      {
+        title: 'Setup: find a value in an unsorted list',
+        body: 'We want to find <strong>target = 7</strong> in this <strong>unsorted</strong> list. We cannot use binary search — the list has no order.',
+        visual: () => linearVis([4,9,2,7,1,5,8,3,6,10], -1, []),
+        highlight: null
+      },
+      {
+        title: 'Check index 0',
+        body: '<strong>arr[0] = 4</strong>. Not our target. Move to the next element.',
+        visual: () => linearVis([4,9,2,7,1,5,8,3,6,10], 0, []),
+        highlight: 1
+      },
+      {
+        title: 'Check indices 1, 2',
+        body: '<strong>arr[1] = 9</strong>, <strong>arr[2] = 2</strong>. Neither matches. We keep scanning…',
+        visual: () => linearVis([4,9,2,7,1,5,8,3,6,10], 2, [0,1]),
+        highlight: 1
+      },
+      {
+        title: 'Found at index 3!',
+        body: '<strong>arr[3] = 7</strong> — we found it! Best case: first element. Worst case: last element (or not found). Average: n/2 → still <strong>O(n)</strong>.',
+        visual: () => linearVis([4,9,2,7,1,5,8,3,6,10], 3, [0,1,2], true),
+        highlight: 2
+      },
+    ],
+
+    codes: [
+      {
+        lang: 'Python — Linear Search + max/min/sum',
+        code: `<span class="cmt"># O(n) — Linear Search (unsorted data)</span>
+<span class="kw">def</span> <span class="fn">linear_search</span>(arr, target):
+    <span class="kw">for</span> i, val <span class="kw">in</span> <span class="fn">enumerate</span>(arr):   <span class="cmt"># visit each element once</span>
+<span class="hl">        <span class="kw">if</span> val == target:
+            <span class="kw">return</span> i                  <span class="cmt"># O(1) best case, O(n) worst case</span></span>
+    <span class="kw">return</span> -<span class="num">1</span>
+
+<span class="cmt"># Other O(n) classics:</span>
+<span class="kw">def</span> <span class="fn">find_max</span>(arr):
+    mx = arr[<span class="num">0</span>]
+<span class="hl">    <span class="kw">for</span> x <span class="kw">in</span> arr:               <span class="cmt"># one pass through all n elements</span>
+        <span class="kw">if</span> x > mx: mx = x</span>
+    <span class="kw">return</span> mx
+
+<span class="kw">def</span> <span class="fn">count_evens</span>(arr):
+    <span class="kw">return</span> <span class="fn">sum</span>(<span class="num">1</span> <span class="kw">for</span> x <span class="kw">in</span> arr <span class="kw">if</span> x % <span class="num">2</span> == <span class="num">0</span>)  <span class="cmt"># O(n)</span>
+
+<span class="kw">def</span> <span class="fn">reverse_list</span>(arr):
+    <span class="kw">return</span> arr[::-<span class="num">1</span>]                           <span class="cmt"># O(n) — copies n elements</span>
+
+<span class="cmt"># Python built-ins that are O(n):</span>
+<span class="cmt"># sum(arr), max(arr), min(arr), list(arr)</span>
+<span class="cmt"># "x in arr" for a list (not a set/dict!)</span>`
+      }
+    ],
+
+    realworld: [
+      { icon:'🔍', name:'Linear search', desc:'Scanning a phone book for a number when you only know the number (not the name).' },
+      { icon:'🎵', name:'Playlist scan', desc:'Finding a song in an unordered playlist requires checking every song.' },
+      { icon:'🧾', name:'Receipt total', desc:'Adding up every line item on a receipt — you touch each item exactly once.' },
+      { icon:'📬', name:'Email filter', desc:'Checking every email in your inbox to find unread messages.' },
+    ]
+  },
+
+  // ── O(n log n) ────────────────────────────────────────
+  {
+    id: 'onlogn',
+    label: 'O(n log n)',
+    name: 'Linearithmic Time',
+    tagline: 'Near-linear — the standard for sorting.',
+    color: '#f472b6',
+    fn: n => n * Math.log2(n),
+    icon: '🔀',
+    badgeStyle: 'background:rgba(244,114,182,.15);color:#f472b6',
+    iconStyle: 'background:rgba(244,114,182,.15);color:#f472b6',
+
+    explain: {
+      what: 'Slightly worse than linear, but much better than quadratic. Most efficient sorting algorithms land here. Essentially: <strong>n elements, each processed log n times</strong>.',
+      why: 'Merge sort works by splitting the list in half (log n levels), then merging each level (n work per level). It\'s provably optimal for comparison-based sorting.',
+      scale: [
+        { n:'10',    ops:'~33' },
+        { n:'1,000', ops:'~10,000' },
+        { n:'1,000,000', ops:'~20,000,000' },
+        { n:'1,000,000,000', ops:'~30 billion' },
+      ],
+      callout: { type:'info', text:'The best achievable complexity for comparison-based sorting. Python\'s sorted() and Java\'s Arrays.sort() both run at O(n log n).' }
+    },
+
+    steps: [
+      {
+        title: 'Merge sort: start with unsorted list',
+        body: 'Our input: <strong>[38, 27, 43, 3, 9, 82, 10]</strong>. Merge sort uses <strong>divide and conquer</strong> — split, sort each half, merge.',
+        visual: () => msVis([[38,27,43,3,9,82,10]], 0),
+        highlight: null
+      },
+      {
+        title: 'Level 1 — Divide in half',
+        body: 'Split into two halves: <strong>[38, 27, 43]</strong> and <strong>[3, 9, 82, 10]</strong>. This halving is the <strong>log n</strong> part.',
+        visual: () => msVis([[38,27,43],[3,9,82,10]], 1),
+        highlight: 1
+      },
+      {
+        title: 'Level 2 — Divide again',
+        body: 'Keep splitting: <strong>[38]</strong>, <strong>[27,43]</strong>, <strong>[3,9]</strong>, <strong>[82,10]</strong>. Single elements are trivially sorted.',
+        visual: () => msVis([[38],[27,43],[3,9],[82,10]], 2),
+        highlight: 1
+      },
+      {
+        title: 'Level 3 — Base cases (single elements)',
+        body: 'Continue until all groups have 1 element: <strong>[38],[27],[43],[3],[9],[82],[10]</strong>. A list of 1 is always sorted.',
+        visual: () => msVis([[38],[27],[43],[3],[9],[82],[10]], 3),
+        highlight: null
+      },
+      {
+        title: 'Merge back up — sorted!',
+        body: 'Now merge pairs in sorted order: [27,38,43] + [3,9,10,82] → <strong>[3,9,10,27,38,43,82]</strong>. Each merge level is O(n), there are O(log n) levels → <strong>O(n log n) total</strong>.',
+        visual: () => msVis([[3,9,10,27,38,43,82]], 4),
+        highlight: 2
+      },
+    ],
+
+    codes: [
+      {
+        lang: 'Python — Merge Sort',
+        code: `<span class="cmt"># O(n log n) — Merge Sort</span>
+<span class="kw">def</span> <span class="fn">merge_sort</span>(arr):
+    <span class="kw">if</span> <span class="fn">len</span>(arr) <= <span class="num">1</span>:
+        <span class="kw">return</span> arr                        <span class="cmt"># base case — already sorted</span>
+
+<span class="hl">    mid = <span class="fn">len</span>(arr) // <span class="num">2</span>                 <span class="cmt"># O(log n) levels of splitting</span>
+    left  = <span class="fn">merge_sort</span>(arr[:mid])       <span class="cmt"># recurse on left half</span>
+    right = <span class="fn">merge_sort</span>(arr[mid:])</span>      <span class="cmt"># recurse on right half</span>
+    <span class="kw">return</span> <span class="fn">merge</span>(left, right)
+
+<span class="kw">def</span> <span class="fn">merge</span>(left, right):               <span class="cmt"># O(n) merge step</span>
+    result = []
+    i = j = <span class="num">0</span>
+    <span class="kw">while</span> i < <span class="fn">len</span>(left) <span class="kw">and</span> j < <span class="fn">len</span>(right):
+<span class="hl">        <span class="kw">if</span> left[i] <= right[j]:
+            result.<span class="fn">append</span>(left[i]);  i += <span class="num">1</span>
+        <span class="kw">else</span>:
+            result.<span class="fn">append</span>(right[j]); j += <span class="num">1</span></span>
+    <span class="kw">return</span> result + left[i:] + right[j:]
+
+<span class="cmt"># Python's built-in sort — also O(n log n) (Timsort)</span>
+data = [<span class="num">38</span>, <span class="num">27</span>, <span class="num">43</span>, <span class="num">3</span>, <span class="num">9</span>, <span class="num">82</span>, <span class="num">10</span>]
+<span class="fn">print</span>(<span class="fn">merge_sort</span>(data))   <span class="cmt"># [3, 9, 10, 27, 38, 43, 82]</span>
+<span class="fn">print</span>(<span class="fn">sorted</span>(data))        <span class="cmt"># same result, Python's built-in</span>`
+      }
+    ],
+
+    realworld: [
+      { icon:'🔀', name:'Python sorted()', desc:'Python\'s Timsort and JavaScript\'s Array.sort() are both O(n log n).' },
+      { icon:'📂', name:'File system sort', desc:'When your OS sorts thousands of files by name or date, it uses an O(n log n) algorithm.' },
+      { icon:'🔗', name:'Merge in Git', desc:'Merging two sorted commit histories is an O(n log n) operation.' },
+      { icon:'📈', name:'Closest pair of points', desc:'Finding the two closest points among n GPS coordinates runs in O(n log n).' },
+    ]
+  },
+
+  // ── O(n²) ─────────────────────────────────────────────
+  {
+    id: 'on2',
+    label: 'O(n²)',
+    name: 'Quadratic Time',
+    tagline: 'Nested loops — danger zone for large inputs.',
+    color: '#f87171',
+    fn: n => n * n,
+    icon: '⚠️',
+    badgeStyle: 'background:rgba(248,113,113,.15);color:#f87171',
+    iconStyle: 'background:rgba(248,113,113,.15);color:#f87171',
+
+    explain: {
+      what: 'For every element, you process every other element. This means a <strong>nested loop</strong>. Doubling the input <strong>quadruples</strong> the work.',
+      why: 'Classic examples: bubble sort, insertion sort, checking all pairs. Fine for n < 1000. Catastrophic for n > 100,000.',
+      scale: [
+        { n:'10',    ops:'100',          cl:'ok' },
+        { n:'1,000', ops:'1,000,000',    cl:'warn' },
+        { n:'10,000',ops:'100,000,000',  cl:'warn' },
+        { n:'100,000',ops:'10 billion',  cl:'danger' },
+      ],
+      callout: { type:'warn', text:'Avoid O(n²) for n > 10,000. Often fixable with sorting or a hash set → O(n log n) or O(n).' }
+    },
+
+    steps: [
+      {
+        title: 'Bubble sort: compare every adjacent pair',
+        body: 'Array: <strong>[5, 3, 8, 1, 4]</strong>. Bubble sort scans the whole array for each element — a nested loop.',
+        visual: () => bubbleVis([5,3,8,1,4], -1, -1, []),
+        highlight: null
+      },
+      {
+        title: 'Pass 1: swap 5 and 3',
+        body: 'Compare arr[0]=5 and arr[1]=3. <strong>5 > 3</strong>, so swap. The larger value "bubbles" toward the end.',
+        visual: () => bubbleVis([3,5,8,1,4], 0, 1, []),
+        highlight: 1
+      },
+      {
+        title: 'Pass 1: 8 bubbles to position 3',
+        body: 'After full pass 1, the largest value (<strong>8</strong>) has reached the end. One pass costs O(n) — we need n passes → <strong>O(n²)</strong>.',
+        visual: () => bubbleVis([3,5,1,4,8], 3, 4, [4]),
+        highlight: 1
+      },
+      {
+        title: 'After all passes — sorted',
+        body: 'After n-1 passes, the array is sorted: <strong>[1, 3, 4, 5, 8]</strong>. But we did ~n²/2 comparisons. For n=10,000 that\'s 50 million.',
+        visual: () => bubbleVis([1,3,4,5,8], -1, -1, [0,1,2,3,4]),
+        highlight: 2
+      },
+    ],
+
+    codes: [
+      {
+        lang: 'Python — Bubble Sort + find duplicates (naive)',
+        code: `<span class="cmt"># O(n²) — Bubble Sort</span>
+<span class="kw">def</span> <span class="fn">bubble_sort</span>(arr):
+    n = <span class="fn">len</span>(arr)
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(n):              <span class="cmt"># outer loop — n iterations</span>
+<span class="hl">        <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(n - i - <span class="num">1</span>):  <span class="cmt"># inner loop — n iterations → O(n²)</span>
+            <span class="kw">if</span> arr[j] > arr[j + <span class="num">1</span>]:
+                arr[j], arr[j+<span class="num">1</span>] = arr[j+<span class="num">1</span>], arr[j]</span>
+    <span class="kw">return</span> arr
+
+<span class="cmt"># O(n²) — Find duplicate values (naive)</span>
+<span class="kw">def</span> <span class="fn">find_duplicates_naive</span>(items):
+    duplicates = []
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(items)):
+<span class="hl">        <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(i + <span class="num">1</span>, <span class="fn">len</span>(items)):   <span class="cmt"># ← makes it O(n²)</span>
+            <span class="kw">if</span> items[i] == items[j]:
+                duplicates.<span class="fn">append</span>(items[i])</span>
+    <span class="kw">return</span> duplicates
+
+<span class="cmt"># Better: O(n) with a set</span>
+<span class="kw">def</span> <span class="fn">find_duplicates_fast</span>(items):    <span class="cmt"># O(n) — use a hash set</span>
+    seen, dups = <span class="fn">set</span>(), <span class="fn">set</span>()
+    <span class="kw">for</span> x <span class="kw">in</span> items:
+        <span class="kw">if</span> x <span class="kw">in</span> seen: dups.<span class="fn">add</span>(x)
+        seen.<span class="fn">add</span>(x)
+    <span class="kw">return</span> <span class="fn">list</span>(dups)`
+      }
+    ],
+
+    realworld: [
+      { icon:'🫧', name:'Bubble / Insertion sort', desc:'Common in textbooks, acceptable only for tiny lists (< 50 items).' },
+      { icon:'🤝', name:'All pairs matching', desc:'Finding every pair of friends in a social network — scales terribly.' },
+      { icon:'🖼️', name:'Naive image comparison', desc:'Comparing every pixel of image A to every pixel of image B.' },
+      { icon:'📐', name:'Matrix multiplication (naive)', desc:'The schoolbook O(n³) — even that is much better than O(n²) per row.' },
+    ]
+  },
+
+  // ── O(n!) ─────────────────────────────────────────────
+  {
+    id: 'onfact',
+    label: 'O(n!)',
+    name: 'Factorial Time',
+    tagline: 'Every permutation — grows astronomically fast.',
+    color: '#c084fc',
+    fn: n => {
+      if (n <= 0) return 1;
+      let f = 1; for (let i=2; i<=Math.min(n,10); i++) f *= i;
+      return f;
+    },
+    icon: '💀',
+    badgeStyle: 'background:rgba(192,132,252,.15);color:#c084fc',
+    iconStyle: 'background:rgba(192,132,252,.15);color:#c084fc',
+
+    explain: {
+      what: 'The algorithm tries every possible <strong>permutation</strong> of the input. Even n=20 produces more operations than atoms in the observable universe.',
+      why: 'The classic example is the brute-force <strong>Travelling Salesman Problem</strong>: try every possible route between n cities.',
+      scale: [
+        { n:'5',  ops:'120',                   cl:'ok' },
+        { n:'10', ops:'3,628,800',              cl:'warn' },
+        { n:'15', ops:'1,307,674,368,000',      cl:'danger' },
+        { n:'20', ops:'2.4 × 10¹⁸ (impossible)', cl:'danger' },
+      ],
+      callout: { type:'danger', text:'Only feasible for n ≤ 10–12. For larger inputs, use approximation algorithms (greedy, dynamic programming).' }
+    },
+
+    steps: [
+      {
+        title: 'The Travelling Salesman Problem',
+        body: 'A salesman must visit <strong>4 cities</strong> exactly once and return home. How many possible routes exist?',
+        visual: () => permVis(4, 0),
+        highlight: null
+      },
+      {
+        title: 'All possible routes: 4! = 24',
+        body: 'With 4 cities we have <strong>4! = 4 × 3 × 2 × 1 = 24</strong> routes to check. That\'s manageable.',
+        visual: () => permVis(4, 1),
+        highlight: 1
+      },
+      {
+        title: 'With 10 cities: 10! = 3.6 million routes',
+        body: '<strong>10! = 3,628,800</strong> routes. A computer handles this — but it\'s getting uncomfortable.',
+        visual: () => permVis(10, 2),
+        highlight: 1
+      },
+      {
+        title: 'With 20 cities: impossible',
+        body: '<strong>20! ≈ 2.4 × 10¹⁸</strong> routes. If you checked 1 billion routes per second, it would take <strong>77 years</strong>. This is why we use approximation algorithms.',
+        visual: () => permVis(20, 3),
+        highlight: 2
+      },
+    ],
+
+    codes: [
+      {
+        lang: 'Python — Brute-force permutations (TSP)',
+        code: `<span class="cmt"># O(n!) — Brute-force Travelling Salesman</span>
+<span class="kw">from</span> itertools <span class="kw">import</span> permutations
+
+<span class="kw">def</span> <span class="fn">tsp_brute_force</span>(distances, start=<span class="num">0</span>):
+    cities = <span class="fn">list</span>(<span class="fn">range</span>(<span class="fn">len</span>(distances)))
+    cities.<span class="fn">remove</span>(start)
+
+    best_cost = <span class="fn">float</span>(<span class="str">'inf'</span>)
+    best_route = <span class="kw">None</span>
+
+<span class="hl">    <span class="kw">for</span> perm <span class="kw">in</span> <span class="fn">permutations</span>(cities):   <span class="cmt"># (n-1)! permutations = O(n!)</span>
+        route = (start,) + perm + (start,)
+        cost = <span class="fn">sum</span>(distances[route[i]][route[i+<span class="num">1</span>]]
+                   <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(route)-<span class="num">1</span>))
+        <span class="kw">if</span> cost < best_cost:
+            best_cost, best_route = cost, route</span>
+
+    <span class="kw">return</span> best_route, best_cost
+
+<span class="cmt"># Works for n ≤ ~12. For n=20, use dynamic programming (O(2ⁿ·n²))</span>
+<span class="cmt"># or greedy heuristics (O(n²)) that give ~good-enough answers.</span>
+
+<span class="cmt"># Factorial growth:</span>
+<span class="kw">import</span> math
+<span class="kw">for</span> n <span class="kw">in</span> [<span class="num">5</span>, <span class="num">10</span>, <span class="num">15</span>, <span class="num">20</span>]:
+    <span class="fn">print</span>(<span class="str">f"n={n}: {math.<span class="fn">factorial</span>(n):,} routes"</span>)
+<span class="cmt"># n=5:  120 routes</span>
+<span class="cmt"># n=10: 3,628,800 routes</span>
+<span class="cmt"># n=15: 1,307,674,368,000 routes</span>
+<span class="cmt"># n=20: 2,432,902,008,176,640,000 routes</span>`
+      }
+    ],
+
+    realworld: [
+      { icon:'🗺️', name:'Travelling Salesman', desc:'Finding the truly shortest route through n cities. Solvable exactly only for small n.' },
+      { icon:'🔐', name:'Password cracking', desc:'Trying all permutations of characters. That\'s why length and variety matter so much.' },
+      { icon:'♟️', name:'Chess brute force', desc:'Evaluating every possible game of chess is O(b^d) — effectively factorial for deep trees.' },
+      { icon:'🧩', name:'Scheduling problems', desc:'Assigning n jobs to n machines optimally — NP-hard, approximated in practice.' },
+    ]
+  },
+];
+
+// ════════════════════════════════════════════════════════
+// VISUAL HELPERS
+// ════════════════════════════════════════════════════════
+function boxes(vals, fills, w, h, color) {
+  return vals.map((v, i) =>
+    `<div class="vis-box" style="width:${w}px;height:${h}px;background:${fills[i]};border:1px solid rgba(255,255,255,.08);color:${color};font-size:12px">${v}</div>`
+  ).join('');
+}
+
+function hashVis(key, found) {
+  const buckets = ['bob','carol','alice','dave','eve'];
+  const aliceIdx = 2;
+  return buckets.map((b,i) => {
+    const isAlice = i === aliceIdx;
+    const active = found && isAlice;
+    const bg = active ? 'rgba(52,211,153,.2)' : isAlice && !found ? 'rgba(96,165,250,.15)' : 'var(--bg3)';
+    const border = active ? '#34d399' : isAlice && !found ? '#60a5fa' : 'rgba(255,255,255,.08)';
+    return `<div class="vis-box" style="width:58px;height:40px;background:${bg};border:1px solid ${border};color:${active?'#34d399':isAlice?'#60a5fa':'var(--muted)'};font-size:11px;flex-direction:column;gap:2px">
+      <span style="font-size:9px;opacity:.5">h=${i}</span><span>${b}</span></div>`;
+  }).join('');
+}
+
+function constBars() {
+  const ns = ['10','1K','1M','1B'];
+  return ns.map(n =>
+    `<div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div class="vis-box" style="width:20px;height:20px;background:rgba(52,211,153,.2);border:1px solid #34d399;color:#34d399;font-size:10px">1</div>
+      <span style="font-size:10px;color:var(--muted);font-family:var(--mono)">n=${n}</span>
+    </div>`
+  ).join('<div style="width:1px;height:30px;background:var(--border);align-self:center"></div>');
+}
+
+function logBars() {
+  const data = [{n:'10',ops:3},{n:'1K',ops:10},{n:'1M',ops:20},{n:'1B',ops:30}];
+  const max = 30;
+  return `<div style="width:100%;display:flex;flex-direction:column;gap:5px">` +
+    data.map(d => `
+      <div style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px">
+        <span style="width:30px;color:var(--muted);text-align:right">${d.n}</span>
+        <div style="flex:1;height:14px;background:var(--bg3);border-radius:3px;overflow:hidden">
+          <div style="height:100%;width:${Math.round(d.ops/max*100)}%;background:rgba(96,165,250,.5);border-radius:3px;transition:width .5s"></div>
+        </div>
+        <span style="width:20px;color:#60a5fa">${d.ops}</span>
+      </div>`).join('') + '</div>';
+}
+
+function bsVis(arr, mid, lo, hi, elim, found) {
+  return arr.map((v, i) => {
+    let bg='var(--bg3)', border='rgba(255,255,255,.08)', color='var(--muted)';
+    if (elim && elim.includes(i)) { bg='rgba(255,255,255,.02)'; color='rgba(122,127,145,.3)'; }
+    if (i===mid && !found) { bg='rgba(96,165,250,.2)'; border='#60a5fa'; color='#60a5fa'; }
+    if (found && i===mid) { bg='rgba(52,211,153,.2)'; border='#34d399'; color='#34d399'; }
+    return `<div class="vis-box" style="width:36px;height:36px;background:${bg};border:1px solid ${border};color:${color};font-size:12px">${v}</div>`;
+  }).join('');
+}
+
+function linearVis(arr, cur, done, found) {
+  return arr.map((v, i) => {
+    let bg='var(--bg3)', border='rgba(255,255,255,.08)', color='var(--muted)';
+    if (done && done.includes(i)) { bg='rgba(255,255,255,.03)'; color='rgba(122,127,145,.4)'; }
+    if (i===cur && found) { bg='rgba(52,211,153,.2)'; border='#34d399'; color='#34d399'; }
+    else if (i===cur) { bg='rgba(251,191,36,.15)'; border='#fbbf24'; color='#fbbf24'; }
+    return `<div class="vis-box" style="width:36px;height:36px;background:${bg};border:1px solid ${border};color:${color};font-size:12px">${v}</div>`;
+  }).join('');
+}
+
+function msVis(groups, level) {
+  const colors = ['rgba(244,114,182,.15)','rgba(244,114,182,.1)','rgba(244,114,182,.07)','rgba(244,114,182,.04)','rgba(52,211,153,.2)'];
+  const borders = ['#f472b6','rgba(244,114,182,.5)','rgba(244,114,182,.3)','rgba(244,114,182,.2)','#34d399'];
+  const texts = ['#f472b6','rgba(244,114,182,.8)','rgba(244,114,182,.7)','var(--muted)','#34d399'];
+  return groups.map((g, gi) =>
+    `<div style="display:flex;gap:3px;padding:5px 7px;background:${colors[Math.min(level,4)]};border:1px solid ${borders[Math.min(level,4)]};border-radius:7px;">` +
+    g.map(v => `<div class="vis-box" style="width:30px;height:28px;background:transparent;color:${texts[Math.min(level,4)]};font-size:12px">${v}</div>`).join('') +
+    `</div>`
+  ).join('');
+}
+
+function bubbleVis(arr, i1, i2, sorted) {
+  return arr.map((v, i) => {
+    let bg='var(--bg3)', border='rgba(255,255,255,.08)', color='var(--muted)';
+    if (sorted && sorted.includes(i)) { bg='rgba(52,211,153,.15)'; border='#34d399'; color='#34d399'; }
+    if (i===i1 || i===i2) { bg='rgba(248,113,113,.2)'; border='#f87171'; color='#f87171'; }
+    return `<div class="vis-box" style="width:40px;height:40px;background:${bg};border:1px solid ${border};color:${color};font-size:14px;font-weight:500">${v}</div>`;
+  }).join('');
+}
+
+function permVis(n, step) {
+  if (step === 0) {
+    return Array.from({length: Math.min(n,8)}, (_,i) =>
+      `<div class="vis-box" style="width:34px;height:34px;background:rgba(192,132,252,.1);border:1px solid rgba(192,132,252,.3);color:#c084fc;font-size:12px">C${i+1}</div>`
+    ).join('') + (n>8?`<span style="color:var(--muted);font-size:12px">…</span>`:'');
+  }
+  const facts = [120,'3,628,800','1.3×10¹²','2.4×10¹⁸'];
+  const clrs = ['#34d399','#fbbf24','#f87171','#f87171'];
+  const ns = [5,10,15,20];
+  return ns.map((nn,i) =>
+    `<div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+      <div style="font-size:22px;font-weight:700;font-family:var(--mono);color:${clrs[i]}">${facts[i]}</div>
+      <div style="font-size:10px;color:var(--muted);font-family:var(--mono)">n=${nn}</div>
+    </div>`
+  ).join('<div style="width:1px;height:40px;background:var(--border)"></div>');
+}
+
+// ════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════
+let activeId = 'o1';
+let activeTab = 'explain';
+let steppers = {};
+
+function getC() { return COMPLEXITIES.find(c => c.id === activeId); }
+
+// ════════════════════════════════════════════════════════
+// RENDER
+// ════════════════════════════════════════════════════════
+function renderNav() {
+  const nav = document.getElementById('complexity-nav');
+  nav.innerHTML = COMPLEXITIES.map(c =>
+    `<button class="cn-btn ${c.id===activeId?'active':''}" onclick="switchC('${c.id}')"
+      style="${c.id===activeId?c.badgeStyle:''}">${c.label}</button>`
+  ).join('');
+}
+
+function renderHeader() {
+  const c = getC();
+  document.getElementById('panel-icon').textContent = c.icon;
+  document.getElementById('panel-icon').style.cssText = c.iconStyle;
+  document.getElementById('panel-title').textContent = c.name;
+  document.getElementById('panel-tagline').textContent = c.tagline;
+  document.getElementById('panel-badge').textContent = c.label;
+  document.getElementById('panel-badge').style.cssText = c.badgeStyle;
+}
+
+function renderTabs() {
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.tab === activeTab);
+    b.style.color = b.dataset.tab === activeTab ? getC().color : '';
+  });
+  document.querySelectorAll('.tab-pane').forEach(p => {
+    p.classList.toggle('active', p.id === 'tab-' + activeTab);
+  });
+}
+
+function renderExplain() {
+  const c = getC();
+  const e = c.explain;
+  const tab = document.getElementById('tab-explain');
+  tab.innerHTML = `
+    <div class="expl-row">
+      <div class="fact-card">
+        <div class="label">What it is</div>
+        <div class="value">${e.what}</div>
+      </div>
+      <div class="fact-card">
+        <div class="label">Why it happens</div>
+        <div class="value">${e.why}</div>
+      </div>
+    </div>
+    <div class="callout ${e.callout.type}">
+      <span class="callout-icon">${e.callout.type==='success'?'✅':e.callout.type==='warn'?'⚠️':e.callout.type==='danger'?'🚫':'ℹ️'}</span>
+      <span>${e.callout.text}</span>
+    </div>
+    <div class="fact-card" style="margin-top:0">
+      <div class="label" style="margin-bottom:8px">How it scales with n (input size)</div>
+      <table class="scale-table">
+        <thead><tr><th>n</th><th>Operations</th></tr></thead>
+        <tbody>
+          ${e.scale.map(r => `<tr><td>${r.n}</td><td class="${r.cl||''}">${r.ops}</td></tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:1rem">
+      <div class="fact-card">
+        <div class="label" style="margin-bottom:10px">Comparison at n = 1,000</div>
+        ${COMPLEXITIES.map(cc => {
+          const val = Math.min(cc.fn(1000), 1e12);
+          const pct = Math.min(Math.log(val+1)/Math.log(1e10)*100, 100);
+          return `<div class="cmp-row">
+            <span class="cmp-label" style="color:${cc.color}">${cc.label}</span>
+            <div class="cmp-bar-wrap">
+              <div class="cmp-bar" style="width:${pct}%;background:${cc.color};opacity:${cc.id===activeId?1:.35}"></div>
+            </div>
+            <span class="cmp-val" style="color:${cc.id===activeId?cc.color:'var(--muted)'}">${fmtOps(cc.fn(1000))}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function fmtOps(n) {
+  if (n >= 1e18) return '∞ (impossible)';
+  if (n >= 1e12) return (n/1e12).toFixed(0)+'T';
+  if (n >= 1e9) return (n/1e9).toFixed(0)+'B';
+  if (n >= 1e6) return (n/1e6).toFixed(0)+'M';
+  if (n >= 1e3) return (n/1e3).toFixed(0)+'K';
+  return Math.round(n).toString();
+}
+
+function renderSteps() {
+  const c = getC();
+  const steps = c.steps;
+  if (!steppers[c.id]) steppers[c.id] = 0;
+  const si = steppers[c.id];
+  const step = steps[si];
+  const tab = document.getElementById('tab-steps');
+
+  const dots = steps.map((s,i) =>
+    `<div class="step-dot ${i<si?'done':i===si?'current':''}" onclick="goStep(${i})" title="${s.title}">${i+1}</div>` +
+    (i<steps.length-1?'<div class="step-line"></div>':'')
+  ).join('');
+
+  tab.innerHTML = `
+    <div class="step-progress">${dots}</div>
+    <div class="step-card">
+      <div class="step-label" style="color:${c.color}">Step ${si+1} of ${steps.length}</div>
+      <div class="step-title">${step.title}</div>
+      <div class="step-body">${step.body}</div>
+      <div class="step-visual" id="step-visual">${step.visual()}</div>
+    </div>
+    <div class="step-nav">
+      <button class="nav-btn danger" onclick="resetStep()">↺ Reset</button>
+      <button class="nav-btn" onclick="prevStep()" ${si===0?'disabled':''}>← Back</button>
+      <button class="nav-btn primary" onclick="nextStep()" ${si===steps.length-1?'disabled':''}>Next →</button>
+      <span class="step-counter">${si+1} / ${steps.length}</span>
+    </div>
+  `;
+  const vis = document.getElementById('step-visual');
+  if (vis) { vis.style.animation='none'; void vis.offsetWidth; vis.style.animation='pop .35s ease'; }
+}
+
+function renderCode() {
+  const c = getC();
+  const tab = document.getElementById('tab-code');
+  tab.innerHTML = c.codes.map(code => `
+    <div class="code-wrap" style="margin-bottom:1rem">
+      <div class="code-lang" style="color:${c.color}">${code.lang}</div>
+      <div class="code-block">${code.code}</div>
+    </div>
+  `).join('');
+}
+
+function renderRealWorld() {
+  const c = getC();
+  const tab = document.getElementById('tab-realworld');
+  tab.innerHTML = `
+    <p class="expl-body">${c.explain.what}</p>
+    <div class="rw-grid">
+      ${c.realworld.map(rw => `
+        <div class="rw-card">
+          <div class="rw-icon">${rw.icon}</div>
+          <div class="rw-name">${rw.name}</div>
+          <div class="rw-desc">${rw.desc}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderAll() {
+  renderNav();
+  renderHeader();
+  renderTabs();
+  if (activeTab === 'explain') renderExplain();
+  else if (activeTab === 'steps') renderSteps();
+  else if (activeTab === 'code') renderCode();
+  else if (activeTab === 'realworld') renderRealWorld();
+}
+
+// ════════════════════════════════════════════════════════
+// ACTIONS
+// ════════════════════════════════════════════════════════
+function switchC(id) {
+  activeId = id;
+  activeTab = 'explain';
+  renderAll();
+}
+
+function switchTab(tab) {
+  activeTab = tab;
+  renderAll();
+}
+
+function nextStep() {
+  const c = getC();
+  if (steppers[c.id] < c.steps.length - 1) { steppers[c.id]++; renderSteps(); }
+}
+function prevStep() {
+  const c = getC();
+  if (steppers[c.id] > 0) { steppers[c.id]--; renderSteps(); }
+}
+function resetStep() { steppers[getC().id] = 0; renderSteps(); }
+function goStep(i) { steppers[getC().id] = i; renderSteps(); }
+
+document.querySelectorAll('.tab-btn').forEach(b =>
+  b.addEventListener('click', () => switchTab(b.dataset.tab))
+);
+
+// ════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════
+renderAll();
+</script>
+</body>
+</html>
