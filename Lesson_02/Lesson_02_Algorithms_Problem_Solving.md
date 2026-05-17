@@ -1,6 +1,6 @@
 # Lesson 02 — Algorithms & Problem Solving
 
-> **Phase 1 — Foundations | Duration: 2 hours | Level: Intermediate**
+> [**Phase 1 — Foundations | Duration: 2 hours | Level: Intermediate**](../Lesson_01/Lesson_01_Computational_Thinking.md)
 
 ---
 
