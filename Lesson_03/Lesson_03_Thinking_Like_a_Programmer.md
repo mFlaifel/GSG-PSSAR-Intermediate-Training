@@ -22,13 +22,13 @@ There is a persistent myth that great programmers write perfect code fast. In re
 
 The mental shifts that define intermediate-to-advanced programmers:
 
-| Beginner Mindset | Intermediate Mindset |
-|---|---|
-| "Does it run?" | "Does it run correctly under all conditions?" |
-| "I'll fix the structure later" | "Poor structure now creates exponential technical debt" |
-| "The error message doesn't help" | "The error message tells me almost exactly what's wrong" |
-| "I'll add features until it works" | "I'll remove complexity until I find the bug" |
-| "I copied this from Stack Overflow" | "I understand this code and can defend every line" |
+| Beginner Mindset                    | Intermediate Mindset                                     |
+| ----------------------------------- | -------------------------------------------------------- |
+| "Does it run?"                      | "Does it run correctly under all conditions?"            |
+| "I'll fix the structure later"      | "Poor structure now creates exponential technical debt"  |
+| "The error message doesn't help"    | "The error message tells me almost exactly what's wrong" |
+| "I'll add features until it works"  | "I'll remove complexity until I find the bug"            |
+| "I copied this from Stack Overflow" | "I understand this code and can defend every line"       |
 
 The goal of this lesson is to accelerate that mental shift.
 
@@ -41,6 +41,7 @@ The goal of this lesson is to accelerate that mental shift.
 Every function, module, and class should do **one thing**. This isn't just a stylistic preference — it's a practical tool for managing complexity.
 
 **Violation of SRP:**
+
 ```python
 # This function does too many things
 def process_user_registration(username, email, password):
@@ -54,17 +55,17 @@ def process_user_registration(username, email, password):
     if len(password) < 8:
         print("Password too short")
         return False
-    
+
     # Hashing
     import hashlib
     hashed = hashlib.sha256(password.encode()).hexdigest()
-    
+
     # Database insertion
     db.execute("INSERT INTO users VALUES (?, ?, ?)", username, email, hashed)
-    
+
     # Send confirmation email
     send_email(email, "Welcome!", "Thanks for signing up.")
-    
+
     print("Registration successful")
     return True
 ```
@@ -72,6 +73,7 @@ def process_user_registration(username, email, password):
 This function is impossible to test in isolation, hard to reuse, and fragile — a change in email sending logic forces you to touch registration logic.
 
 **Decomposed version:**
+
 ```python
 def validate_username(username: str) -> tuple[bool, str]:
     if len(username) < 3:
@@ -96,18 +98,18 @@ def register_user(username: str, email: str, password: str) -> dict:
     valid, error = validate_username(username)
     if not valid:
         return {"success": False, "error": error}
-    
+
     valid, error = validate_email(email)
     if not valid:
         return {"success": False, "error": error}
-    
+
     hashed = hash_password(password)
     saved = save_user(username, email, hashed)
-    
+
     if saved:
         send_confirmation_email(email)
         return {"success": True}
-    
+
     return {"success": False, "error": "Database error"}
 ```
 
@@ -137,21 +139,22 @@ Violating this — e.g., writing SQL directly in a UI event handler — creates 
 
 Recognizing that a problem fits a known pattern is the fastest path to a solution:
 
-| Problem Shape | Pattern | Approach |
-|---|---|---|
-| "Find all X that meet condition Y" | Filter | Loop + condition, or list comprehension |
-| "Transform each item" | Map | Apply function to each element |
-| "Combine all items into one value" | Reduce | Accumulate (sum, join, merge) |
-| "Do something after a delay or event" | Callback / event-driven | Functions as arguments |
-| "Avoid duplicate work" | Caching / Memoization | Store computed results |
-| "Process items as they arrive" | Stream / Iterator | Generator functions |
-| "Coordinate multiple operations" | Pipeline | Chained functions |
+| Problem Shape                         | Pattern                 | Approach                                |
+| ------------------------------------- | ----------------------- | --------------------------------------- |
+| "Find all X that meet condition Y"    | Filter                  | Loop + condition, or list comprehension |
+| "Transform each item"                 | Map                     | Apply function to each element          |
+| "Combine all items into one value"    | Reduce                  | Accumulate (sum, join, merge)           |
+| "Do something after a delay or event" | Callback / event-driven | Functions as arguments                  |
+| "Avoid duplicate work"                | Caching / Memoization   | Store computed results                  |
+| "Process items as they arrive"        | Stream / Iterator       | Generator functions                     |
+| "Coordinate multiple operations"      | Pipeline                | Chained functions                       |
 
 ### The DRY Principle in Practice
 
 **Don't Repeat Yourself** is more than avoiding copy-paste. If you find yourself writing similar logic in two places, ask: what is the generalized version of this?
 
 **Before DRY:**
+
 ```python
 # Calculating discount for different user types
 if user_type == "student":
@@ -168,6 +171,7 @@ if user_type == "employee":
 ```
 
 **After DRY — data-driven design:**
+
 ```python
 DISCOUNT_RATES = {
     "student":  0.80,
@@ -266,6 +270,7 @@ if elapsed_time > SECONDS_IN_A_DAY:
 ### Mistake 4: Premature Optimization
 
 Writing complex, clever code to optimize performance before establishing that:
+
 1. The code is correct
 2. Performance is actually a problem
 3. This specific part is the bottleneck
@@ -273,6 +278,28 @@ Writing complex, clever code to optimize performance before establishing that:
 > "Premature optimization is the root of all evil." — Donald Knuth
 
 Write clear, correct code first. Measure. Then optimize the bottleneck.
+
+```python
+def whatIdo(numbers):
+    result = []
+    append = result.append
+
+    for i in range(len(numbers)):
+        if not (numbers[i] & 1):
+            append(numbers[i])
+
+    return result
+```
+
+<details>
+<summary>Simple Ver</summary>
+
+```python
+def whatIdoV2(numbers):
+    return [n for n in numbers if n % 2 == 0]
+```
+
+</details>
 
 ### Mistake 5: Global Mutable State
 
@@ -318,6 +345,7 @@ KeyError: 'price'                               ← Exception type + message
 ```
 
 **Reading process:**
+
 1. Jump to the **bottom** — that's the actual error
 2. `KeyError: 'price'` → a dictionary doesn't have the key `"price"`
 3. The failing line: `item["price"]` — one of your items lacks a `"price"` key
@@ -325,15 +353,15 @@ KeyError: 'price'                               ← Exception type + message
 
 **Common Python Exceptions and What They Mean:**
 
-| Exception | Meaning | Common Cause |
-|---|---|---|
-| `KeyError` | Dictionary key doesn't exist | Assuming a key is always present |
-| `AttributeError` | Object doesn't have that attribute/method | Wrong type, or `None` instead of an object |
-| `TypeError` | Wrong type for the operation | Mixing strings and numbers, wrong function arguments |
-| `IndexError` | List index out of range | Off-by-one errors, empty list access |
-| `ValueError` | Right type, wrong value | `int("abc")`, invalid enum value |
-| `ImportError` | Module not found | Missing installation, wrong name |
-| `RecursionError` | Stack overflow from infinite recursion | Missing base case in recursive function |
+| Exception        | Meaning                                   | Common Cause                                         |
+| ---------------- | ----------------------------------------- | ---------------------------------------------------- |
+| `KeyError`       | Dictionary key doesn't exist              | Assuming a key is always present                     |
+| `AttributeError` | Object doesn't have that attribute/method | Wrong type, or `None` instead of an object           |
+| `TypeError`      | Wrong type for the operation              | Mixing strings and numbers, wrong function arguments |
+| `IndexError`     | List index out of range                   | Off-by-one errors, empty list access                 |
+| `ValueError`     | Right type, wrong value                   | `int("abc")`, invalid enum value                     |
+| `ImportError`    | Module not found                          | Missing installation, wrong name                     |
+| `RecursionError` | Stack overflow from infinite recursion    | Missing base case in recursive function              |
 
 ---
 
@@ -347,10 +375,11 @@ Debugging is empirical. Follow the scientific method:
 A bug you can't reproduce consistently is the hardest kind. Before anything else, create a minimal, reproducible test case. Can you trigger it with specific inputs?
 
 **Step 2 — Understand what "correct" looks like**
-What *should* happen? If you can't state the expected behavior precisely, you can't know when it's fixed.
+What _should_ happen? If you can't state the expected behavior precisely, you can't know when it's fixed.
 
 **Step 3 — Isolate the location**
 Use binary search on your codebase:
+
 - Does the bug occur in the first half of the code or the second half?
 - Add a checkpoint in the middle. Narrow down further.
 
@@ -364,7 +393,7 @@ print(f"DEBUG: current user={current_user!r}")
 ```
 
 **Step 5 — Form and test a hypothesis**
-State your theory explicitly: *"I think the bug is that `items` is sometimes `None` because the API call fails silently."* Then test it. Don't fix code until you've confirmed the cause.
+State your theory explicitly: _"I think the bug is that `items` is sometimes `None` because the API call fails silently."_ Then test it. Don't fix code until you've confirmed the cause.
 
 **Step 6 — Fix, verify, and clean up**
 Apply the minimal fix that addresses the root cause. Verify the bug is gone. Remove all diagnostic output. Consider adding a test to prevent regression.
@@ -382,6 +411,7 @@ def calculate_total(items):
 ```
 
 At the `(Pdb)` prompt:
+
 - `n` — next line
 - `s` — step into function call
 - `p variable` — print variable value
@@ -438,11 +468,11 @@ If a function doesn't fit on one screen, it's a signal to decompose further. A f
 
 ## Further Exploration
 
-- **"Clean Code" by Robert C. Martin** — canonical text on readable, maintainable code
+- [**"Clean Code" by Robert C. Martin** — canonical text on readable, maintainable code](https://github.com/zedr/clean-code-python)
 - **"The Pragmatic Programmer" by Hunt & Thomas** — mindset and methodology for software development
 - Python's `pdb` documentation: `python -m pdb your_script.py`
 - Try: Take a piece of code you wrote previously and refactor it applying SRP — count how many individual functions you end up with
 
 ---
 
-*Next: Lesson 04 — Using AI as a Developer*
+_Next: Lesson 04 — Using AI as a Developer_
