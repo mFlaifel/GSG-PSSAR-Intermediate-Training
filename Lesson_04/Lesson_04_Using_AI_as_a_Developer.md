@@ -1,448 +1,663 @@
 # Lesson 04 — Using AI as a Developer
 
-> **Phase 1 — Foundations | Duration: 2 hours | Level: Intermediate**
+> **Phase 1 — Foundations | Duration: 2 Hours | Updated: June 2026**
+> **Level:** Beginner-Intermediate | **Prerequisites:** Lessons 01–03
 
 ---
 
-## Learning Objectives
+## ⏱️ Session Roadmap (2 Hours)
 
-By the end of this lesson, you will be able to:
-
-- Use GitHub Copilot, Claude, and ChatGPT effectively as development tools
-- Write high-quality prompts that produce accurate, production-relevant code
-- Critically evaluate AI-generated code for correctness, security, and maintainability
-- Understand the technical limitations of current LLMs and where they fail
-- Apply ethical guidelines for AI use in professional development contexts
-
----
-
-## 1. AI Tools in the Modern Developer Workflow
-
-AI coding assistants have changed what's possible for individual developers. Tasks that previously required hours of research, boilerplate writing, or trial-and-error can now be accelerated significantly.
-
-But acceleration amplifies both skill and ignorance. An experienced developer uses AI to move faster. A developer without a strong foundation uses AI to produce code they cannot understand, debug, or maintain.
-
-> **AI tools raise the floor for beginners and raise the ceiling for experts. They do not replace the need to understand what you're building.**
-
-### The Main Tools
-
-| Tool | Type | Primary Strength | Best For |
-|---|---|---|---|
-| **GitHub Copilot** | IDE-integrated autocomplete | Context-aware in-editor suggestions | Boilerplate, function completion, inline code |
-| **Claude** | Conversational AI | Long-context reasoning, explanations, analysis | Architecture decisions, code review, debugging complex logic |
-| **ChatGPT (GPT-4o)** | Conversational AI | Broad knowledge, creative suggestions | Exploration, learning new concepts, drafting |
-
-These are complementary, not interchangeable. Using the right tool for the right task matters.
+| Block      | Time        | Topic                                          |
+| ---------- | ----------- | ---------------------------------------------- |
+| 🟦 Block 1 | 0:00 – 0:20 | Why AI matters + The modern AI ecosystem       |
+| 🟩 Block 2 | 0:20 – 0:45 | How LLMs work + Context windows + Agents       |
+| 🟨 Block 3 | 0:45 – 1:10 | Prompt engineering + Real workflows            |
+| 🟥 Block 4 | 1:10 – 1:35 | Security, ethics, and dangers of over-reliance |
+| ✅ Block 5 | 1:35 – 2:00 | Hands-on exercise + Summary + Q&A              |
 
 ---
 
-## 2. How Large Language Models (LLMs) Actually Work
+## 🟦 Block 1 — Why This Lesson Matters (20 min)
 
-Understanding the underlying mechanics prevents misuse and calibrates expectations.
+### AI in 2026 Is Not Optional
 
-### What LLMs Are
+In 2026, AI is no longer just autocomplete. It is a core part of how professional developers work.
 
-LLMs are neural networks trained to **predict the next token** (roughly, the next word or subword) given a sequence of previous tokens. They are trained on massive datasets of text — including code — and learn statistical patterns about what text tends to follow what.
+A developer who ignores AI tools is like a developer who refuses to use version control.
 
-They are **not**:
-- Databases (they don't "look up" facts — they generate them probabilistically)
-- Reasoning engines (they simulate reasoning via learned patterns)
-- Compilers (they don't execute or test code during generation)
+But there is a real danger on the other side:
 
-They **are**:
-- Pattern-matching systems with extraordinary breadth
-- Context-sensitive text generators
-- Probabilistic — the same prompt can produce different outputs
-- Capable of being confidently wrong (hallucination)
+> **Developers who use AI without understanding fundamentals build fragile systems they cannot maintain, debug, or explain.**
 
-### The Hallucination Problem
+This lesson teaches you to use AI **professionally, safely, and critically.**
 
-Because LLMs predict statistically plausible text, they will generate:
-- **Non-existent library functions** (e.g., `pandas.read_sql_smart()`)
-- **Outdated API signatures** that changed in recent versions
-- **Subtly incorrect logic** that looks syntactically correct
-- **Fabricated citations** (less relevant for code, but relevant for research)
+[AI Layoff in 2026](https://chatgpt.com/share/6a11aec2-92d4-83e9-a9a7-dba4a6bd71a3)
+[clickup layoff](https://americanbazaaronline.com/2026/05/22/clickup-cuts-22-workforce-as-ceo-zeb-evans-pushes-ai-first-strategy-481410/)
 
-This is not a bug that will be "fixed" — it is intrinsic to how these models work. The mitigation is **you**: a developer who understands the domain enough to spot the error.
+---
+
+### What Modern AI Can Do
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    AI Developer Capabilities (2026)             │
+├─────────────────┬───────────────────────────────────────────────┤
+│  Write Code     │  Generate functions, classes, entire modules  │
+│  Debug          │  Analyze errors, stack traces, suggest fixes  │
+│  Explain        │  Break down concepts step-by-step             │
+│  Refactor       │  Clean up and improve existing code           │
+│  Test           │  Generate unit tests and edge cases           │
+│  Document       │  Write README files, docstrings, API docs     │
+│  Review         │  Check for security flaws and style issues    │
+│  Act (Agents)   │  Run terminals, browse the web, modify files  │
+└─────────────────┴───────────────────────────────────────────────┘
+```
+
+---
+
+### The AI Developer Ecosystem (2026)
+
+```
+                    ┌─────────────────────────┐
+                    │     AI TOOLS FOR DEVS   │
+                    └──────────┬──────────────┘
+                               │
+            ┌──────────────────┼───────────────────┐
+            ▼                  ▼                    ▼
+   ┌─────────────────┐  ┌────────────────┐  ┌────────────────┐
+   │  Chat Assistants│  │ IDE Assistants │  │   AI Agents    │
+   │                 │  │                │  │                │
+   │ • ChatGPT       │  │ • GitHub       │  │ • Claude Code  │
+   │ • Claude        │  │   Copilot      │  │ • Devin        │
+   │ • Gemini        │  │ • Cursor       │  │ • Cursor Agent │
+   │ • Perplexity    │  │ • Windsurf     │  │ • Windsurf     │
+   │                 │  │ • JetBrains AI │  │   Cascade      │
+   └─────────────────┘  └────────────────┘  └────────────────┘
+   Explain, debug,       Inline suggestions,  Multi-step tasks,
+   architecture          autocomplete, tests  tool use, autonomy
+```
+
+#### Quick Comparison
+
+| Tool Type       | Best For                           | Use When                          |
+| --------------- | ---------------------------------- | --------------------------------- |
+| Chat Assistants | Learning, explaining, architecture | You need to understand something  |
+| IDE Assistants  | Writing code faster                | You are actively coding           |
+| AI Agents       | Complex multi-step tasks           | You want AI to execute a workflow |
+
+---
+
+## 🟩 Block 2 — How AI Models Actually Work (25 min)
+
+### What Is an LLM?
+
+An **LLM (Large Language Model)** is a neural network trained to predict the next token in a sequence.
+
+```
+Input text ──► Tokenizer ──► Token IDs ──► Model ──► Next Token ──► Output
+  "def greet"    splits        [1234,         LLM       "("          "def greet("
+                 into           5678]
+                 tokens
+```
+
+**A [token](https://tokenizer.model.box/?model=gpt-4o) is roughly:**
+
+- A common word (`def`, `for`, `if`)
+- Part of a longer word (`program` → `pro` + `gram`)
+- Punctuation or code symbols
+
+The model does **NOT**:
+
+- Understand code like a compiler does
+- Verify that its output is correct
+- Know the current date or live data
+- Execute logic while generating text
+
+It **predicts statistically likely text** based on training patterns.
+
+<details>
+<summary>try this</summary>
+
+ask deepseek and chatgpt
+
+```
+what happened on June 4, 1989 at tiananmen square?
+```
+
+</details>
+
+<summary>
+
+## </summary>
+
+### Why AI Sometimes Gets It Wrong
+
+This is called **hallucination** — the model generates confident but incorrect output.
+
+```
+┌─────────────────────────────────────────────────────┐
+│                  HALLUCINATION TYPES                │
+├─────────────────────────────────────────────────────┤
+│ 🔴 Invented APIs     │ Calls functions that don't   │
+│                      │ exist in the real library    │
+├─────────────────────────────────────────────────────┤
+│ 🔴 Outdated Syntax   │ Uses old library versions    │
+│                      │ or deprecated methods        │
+├─────────────────────────────────────────────────────┤
+│ 🔴 Confident Errors  │ Gives wrong answer with      │
+│                      │ full confidence              │
+├─────────────────────────────────────────────────────┤
+│ 🔴 Insecure Code     │ Generates SQL injection,     │
+│                      │ weak passwords, bad crypto   │
+└─────────────────────────────────────────────────────┘
+```
+
+> ⚠️ **Hallucination is not a bug to be fixed. It is a fundamental property of how these models work. Always verify critical output.**
 
 ### Context Windows
 
-Every conversation with an AI model operates within a **context window** — a maximum number of tokens the model can consider at once. Beyond this window, the model has no memory of earlier content.
+The **context window** is the maximum amount of text a model can process in one request — including your question, its response, and any files you share.
 
-| Model | Context Window (approximate) |
-|---|---|
-| GPT-4o | 128K tokens (~96,000 words) |
-| Claude Sonnet | 200K tokens (~150,000 words) |
-| Copilot (in-editor) | Surrounding file + related files |
+```
+┌─────────────────────────────────────────────────────┐
+│                    CONTEXT WINDOW                   │
+│                                                     │
+│   Your Prompt   +   Files/Code   +   AI Response   │
+│   ───────────────────────────────────────────────  │
+│   ◄──────────────────────────────────────────────► │
+│            Total tokens must fit inside             │
+└─────────────────────────────────────────────────────┘
+```
 
-For long codebases, paste only the **relevant portions** plus sufficient context for the model to reason correctly.
+Modern models (2026) support **very large** context windows — up to hundreds of thousands of tokens. But:
+
+> More context does NOT always mean better reasoning. Provide only what is relevant.
+
+![lost in middle](https://www.damiangalarza.com/images/posts/lost-in-the-middle.png)
+
+- [optimal coding length](https://chatgpt.com/share/6a11d25f-e060-83ea-9748-8e8c4c33c116)
 
 ---
 
-## 3. GitHub Copilot — In-Editor Intelligence
+### AI Agents — The Big Change Since 2024
 
-### How It Works
+Traditional AI answered questions. **Modern AI agents perform workflows.**
 
-Copilot uses your current file, surrounding context, and (in recent versions) related open files to suggest completions. It's most effective when:
+```
+Traditional AI:                    AI Agent:
 
-- Your function name and parameters clearly communicate intent
-- You've written a descriptive comment explaining what the function should do
-- The code pattern you need is common in its training data
-
-### Getting Good Suggestions
-
-**Technique 1: Write intent before implementation**
-```python
-# Convert a list of transaction dictionaries to a CSV string
-# Each row: date, description, amount (formatted as currency)
-# Sort by date ascending
-def transactions_to_csv(transactions: list[dict]) -> str:
-    # Copilot will suggest the implementation here
+User: "Write a login route"        User: "Add authentication to my project"
+                                        │
+AI: [returns code]                      ▼
+                                   Agent: Reads your project files
+                                        │
+                                        ▼
+                                   Agent: Plans the changes needed
+                                        │
+                                        ▼
+                                   Agent: Writes the code
+                                        │
+                                        ▼
+                                   Agent: Runs tests
+                                        │
+                                        ▼
+                                   Agent: Reports back
 ```
 
-**Technique 2: Provide type hints**
-Type annotations dramatically improve suggestion quality — Copilot uses them to understand data shapes.
+An agent can:
 
-```python
-# Vague — poor suggestions
-def process(data):
-    ...
+- Read your files
+- Run terminal commands
+- Browse documentation
+- Modify your project
+- Retry after failure
 
-# Clear — much better suggestions
-def calculate_portfolio_return(
-    holdings: dict[str, float],   # ticker: quantity
-    prices: dict[str, float],      # ticker: current price
-    cost_basis: dict[str, float]   # ticker: purchase price
-) -> dict[str, float]:             # ticker: return percentage
-    ...
-```
-
-**Technique 3: Complete the first line**
-Copilot often gets "unstuck" if you write the first meaningful line of implementation and let it continue:
-
-```python
-def find_most_common(items: list) -> any:
-    from collections import Counter
-    # Copilot takes over here with a good suggestion
-```
-
-### What Copilot Gets Wrong
-
-- **Security vulnerabilities**: Copilot has been shown to suggest insecure patterns (SQL injection-prone queries, weak cryptography, hardcoded credentials) because such patterns exist in its training data
-- **Subtle algorithmic errors**: It will confidently produce code with off-by-one errors or incorrect boundary conditions
-- **Deprecated APIs**: Suggestions for libraries it was trained on before major version changes
-
-**Never commit Copilot output without reviewing it** the same way you'd review code from a junior developer.
+Examples: **Claude Code**, **Cursor Agent**, **Devin**, **Windsurf Cascade**
 
 ---
 
-## 4. Prompt Engineering for Code — Claude and ChatGPT
+### MCP — The Protocol Behind AI Tool Integration
 
-Unlike Copilot, conversational AI tools require you to construct prompts deliberately. The quality of your output is directly proportional to the quality of your input.
+**MCP (Model Context Protocol)** allows AI systems to connect to external tools and data.
 
-### The Anatomy of a High-Quality Code Prompt
+Think of it as:
 
-A strong code prompt includes:
+> **"USB for AI tools"**
 
-1. **Context** — what system/application is this for?
-2. **Task** — what specifically needs to be built or fixed?
-3. **Constraints** — language, framework, version, performance requirements
-4. **Input/output specification** — what does the function receive and return?
-5. **Edge cases** — what unusual inputs must be handled?
-6. **Examples** — sample inputs and expected outputs
-
-### Prompt Quality Examples
-
-**Weak Prompt:**
 ```
-Write a function to validate email addresses in Python
-```
-
-**Problems:** No context about what "validate" means (format only? or MX record check?), no error handling requirements, no output format specified.
-
-**Strong Prompt:**
-```
-Write a Python function to validate email addresses with the following requirements:
-
-Context: This will be used in a user registration API endpoint.
-
-Function signature:
-    def validate_email(email: str) -> tuple[bool, str]:
-        # Returns (is_valid, error_message)
-        # error_message is empty string if valid
-
-Validation rules:
-1. Must contain exactly one @ symbol
-2. Local part (before @) must be 1-64 characters, alphanumeric + . _ -
-3. Domain must have at least one dot, TLD must be 2-6 alpha characters
-4. No consecutive dots allowed anywhere
-5. Must not start or end with a dot or hyphen
-
-Edge cases to handle:
-- Empty string → (False, "Email cannot be empty")
-- No @ symbol → (False, "Invalid email format")
-- Multiple @ symbols → (False, "Invalid email format")
-
-Do NOT use external libraries. Use only Python's re module.
-
-Examples:
-- "user@example.com" → (True, "")
-- "user..name@example.com" → (False, "Consecutive dots not allowed")
-- "@nodomain.com" → (False, "Invalid email format")
+                      ┌─────────────┐
+                      │   AI Model  │
+                      └──────┬──────┘
+                             │  MCP Protocol
+          ┌──────────────────┼───────────────────┐
+          ▼                  ▼                    ▼
+   ┌─────────────┐   ┌──────────────┐   ┌──────────────┐
+   │   GitHub    │   │   Database   │   │ File System  │
+   └─────────────┘   └──────────────┘   └──────────────┘
+          ▼                  ▼                    ▼
+   ┌─────────────┐   ┌──────────────┐   ┌──────────────┐
+   │  Your Docs  │   │   APIs       │   │ Company Tools│
+   └─────────────┘   └──────────────┘   └──────────────┘
 ```
 
-The second prompt eliminates ambiguity, gives the model everything it needs, and sets clear expectations.
+MCP is why AI assistants in 2026 can work with your real project data.
 
-### Prompt Patterns for Developers
+---
 
-**Pattern 1: The Explainer**
+### RAG — How AI Stays Up to Date
+
+**RAG (Retrieval-Augmented Generation)** allows AI to search documents before generating a response.
+
 ```
-Explain what this code does, then identify any bugs or inefficiencies:
+Without RAG:                    With RAG:
 
-[paste code]
-
-Explain as if talking to a senior developer, not a beginner.
+User asks question              User asks question
+      │                               │
+      ▼                               ▼
+Model uses only                 System searches
+training data                   your documents
+(may be outdated)                     │
+      │                               ▼
+      ▼                         Relevant chunks
+Model answers                   injected into prompt
+                                      │
+                                      ▼
+                                Model answers using
+                                fresh, specific data
 ```
 
-**Pattern 2: The Reviewer**
+RAG is used in enterprise AI tools, documentation assistants, and customer support systems.
+
+---
+
+## 🟨 Block 3 — Using AI Effectively (25 min)
+
+### The Core Skill: Prompt Engineering
+
+**Prompt quality directly determines output quality.**
+
+#### Anatomy of a Strong Development Prompt
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                  STRONG PROMPT STRUCTURE                 │
+├──────────────────────────────────────────────────────────┤
+│  1. CONTEXT     What language, framework, environment?   │
+│  2. GOAL        What exactly should this code do?        │
+│  3. CONSTRAINTS Flask/SQLite/bcrypt, no globals, etc.    │
+│  4. I/O         What goes in? What comes out?            │
+│  5. EDGE CASES  Empty input, invalid data, errors?       │
+│  6. EXAMPLE     Show a sample input and expected output  │
+└──────────────────────────────────────────────────────────┘
+```
+
+---
+
+#### Prompt Comparison: Weak vs. Strong
+
+**❌ Weak Prompt:**
+
+```
+Write a Python login system
+```
+
+Problems: No framework, no security requirements, no database, no error handling.
+
+---
+
+**✅ Strong Prompt:**
+
+```
+Build a Flask login endpoint.
+
+Requirements:
+- Use Flask and SQLite
+- Hash passwords with bcrypt
+- Use parameterized SQL queries (no string concatenation)
+- Return JSON responses with proper HTTP status codes
+- Handle: empty username, missing password, duplicate accounts
+- Include type hints and docstrings
+- Do not use global variables
+
+Input: { "username": "ali", "password": "secure123" }
+Output (success): { "status": "ok", "token": "..." }
+Output (fail): { "status": "error", "message": "Invalid credentials" }
+```
+
+The second prompt produces dramatically safer, production-quality code.
+
+---
+
+### 5 High-Value AI Workflows
+
+#### Workflow 1 — Learning (Use AI to build skill, not bypass it)
+
+```
+Step 1: Ask AI to explain the concept
+        │
+        ▼
+Step 2: Implement it yourself (without AI)
+        │
+        ▼
+Step 3: Ask AI to review your implementation
+        │
+        ▼
+Step 4: Compare and understand the differences
+```
+
+> 🎯 Goal: AI accelerates learning. You still write the code.
+
+---
+
+#### Workflow 2 — Debugging
+
+Provide the full context:
+
+```
+Error: TypeError: Object of type User is not JSON serializable
+
+Expected behavior:
+  GET /api/user/1 → returns { "id": 1, "name": "Ali" }
+
+Actual behavior:
+  Returns 500 Internal Server Error
+
+Stack trace:
+  [paste full traceback here]
+
+Relevant code:
+  [paste the route function here]
+
+Explain the root cause and show the fix.
+```
+
+---
+
+#### Workflow 3 — Code Review
+
 ```
 Review this Python function for:
-1. Correctness — does it handle all edge cases?
-2. Security — are there any injection or overflow risks?
-3. Performance — are there any O(n²) operations that could be O(n)?
-4. Readability — does it follow PEP 8 and clean code principles?
+- Security vulnerabilities
+- Performance issues
+- Readability and naming
+- Missing edge cases
+- Python best practices (PEP 8)
 
-[paste code]
-
-For each issue found, show the problematic code and a corrected version.
+[paste your function here]
 ```
 
-**Pattern 3: The Refactorer**
+---
+
+#### Workflow 4 — Test Generation
+
+Ask AI to generate:
+
+- Unit tests for individual functions
+- Integration tests for full flows
+- Edge case tests (empty input, wrong types, boundary values)
+- Mock objects for external dependencies
+
+---
+
+#### Workflow 5 — Documentation
+
+AI can draft:
+
+- README files
+- Function docstrings
+- API endpoint documentation
+- Architecture summaries
+
+> ⚠️ Always review AI-generated documentation. It may describe code incorrectly.
+
+---
+
+### Trust Matrix — When to Use AI Output Directly
+
 ```
-Refactor this code to follow the Single Responsibility Principle.
-The current function [describe what it does].
+┌──────────────────────────┬─────────────────────────────┐
+│    HIGH TRUST ✅          │    MUST VERIFY CAREFULLY ⚠️  │
+├──────────────────────────┼─────────────────────────────┤
+│ Boilerplate code         │ Authentication systems       │
+│ Regex patterns           │ Payment and billing logic    │
+│ Test scaffolding         │ Database queries (raw SQL)   │
+│ Docstring drafts         │ Cryptography implementations │
+│ Explaining common APIs   │ Medical/legal software       │
+│ Reformatting/refactoring │ Production infrastructure    │
+│ Markdown/README drafts   │ New framework APIs           │
+└──────────────────────────┴─────────────────────────────┘
+```
+
+---
+
+## 🟥 Block 4 — Security, Ethics, and Dangers (25 min)
+
+### AI-Generated Code Has Real Security Risks
+
+AI models were trained on millions of open source repositories — including **insecure code**. They can generate dangerous patterns confidently.
+
+#### Example: SQL Injection
+
+```python
+# ❌ DANGEROUS — AI may generate this
+# Vulnerable to SQL injection attacks
+query = f"SELECT * FROM users WHERE name = '{username}'"
+cursor.execute(query)
+
+# If username = "' OR '1'='1"
+# The query becomes: SELECT * FROM users WHERE name = '' OR '1'='1'
+# This returns ALL users — a serious security breach
+```
+
+```python
+# ✅ CORRECT — Always use parameterized queries
+cursor.execute(
+    "SELECT * FROM users WHERE name = ?",
+    (username,)
+)
+# The ? placeholder safely separates data from SQL logic
+```
+
+#### Common AI Security Mistakes
+
+```
+┌────────────────────────────────────────────────────────┐
+│           SECURITY RISKS IN AI-GENERATED CODE          │
+├────────────────────────────────────────────────────────┤
+│ 🔴 SQL Injection       │ String formatting in queries  │
+│ 🔴 Hardcoded Secrets   │ API keys in source code       │
+│ 🔴 Weak Passwords      │ MD5 instead of bcrypt         │
+│ 🔴 Insecure Auth       │ Missing token validation      │
+│ 🔴 Path Traversal      │ Unsanitized file paths        │
+│ 🔴 Exposed Debug Info  │ Stack traces in responses     │
+└────────────────────────────────────────────────────────┘
+```
+
+> 🔑 **AI does not replace security knowledge. It gives you code that looks correct but may be dangerous.**
+
+---
+
+### Privacy: Never Paste This Into Public AI Tools
+
+```
+❌ NEVER share with public AI tools:
+   • API keys and secrets
+   • Passwords and tokens
+   • Customer personal data
+   • Medical or legal records
+   • Proprietary source code
+   • Database connection strings
+   • Company financial data
+```
+
+Some organizations have policies **completely prohibiting** use of public AI tools with internal data. Always follow your organization's guidelines.
+
+---
+
+### The Biggest Danger: Skill Atrophy
+
+```
+The Dependency Trap:
+
+Student copies AI code ──► Doesn't understand it
+        │
+        ▼
+Submits code that works in one case
+        │
+        ▼
+Bug appears in production
+        │
+        ▼
+Cannot debug because they never understood the code
+        │
+        ▼
+Pastes error into AI again ──► Gets another fix they don't understand
+        │
+        ▼
+Cycle continues → No real skills developed
+```
+
+**Use AI to learn, not to avoid learning.**
+
+---
+
+### Academic and Professional Ethics
+
+| ✅ Ethical Use                   | ❌ Unethical Use                             |
+| -------------------------------- | -------------------------------------------- |
+| Ask AI to explain a concept      | Submit work you cannot explain               |
+| Use AI to review your code       | Use AI to fake understanding                 |
+| Generate tests for your function | Claim AI work as your own without disclosure |
+| Debug with AI assistance         | Bypass assignments to avoid learning         |
+| Use AI to explore new topics     | Violate organizational AI policies           |
+
+---
+
+## ✅ Block 5 — Hands-On Exercise + Summary (25 min)
+
+### Practical Exercise: Prompt Refinement Lab
+
+**Goal:** Build a function that analyzes log files.
+
+---
+
+**Round 1 — Bad Prompt (write this on board):**
+
+```
+Write a log parser.
+```
+
+❌ Too vague. What logs? What output? What format?
+
+---
+
+**Round 2 — Better Prompt:**
+
+```
+Write a Python function that counts log severity levels.
+```
+
+Better, but still missing: file path, format, return type, error handling.
+
+---
+
+**Round 3 — Strong Prompt (the goal):**
+
+```
+Write a Python function with this signature:
+
+    def count_log_levels(filepath: str) -> dict[str, int]
 
 Requirements:
-- Split into multiple focused functions
-- Maintain identical external behavior
-- Add type hints to all function signatures
-- Don't change the logic
+- Read file line-by-line (must handle files > 1GB)
+- Parse severity from tags: [INFO], [WARNING], [ERROR]
+- Ignore lines that don't match the format
+- Return uppercase severity counts
+- Raise FileNotFoundError if file doesn't exist
+- Add type hints and a docstring
 
-[paste code]
+Example input (log.txt):
+  2026-06-01 [ERROR] Database connection failed
+  2026-06-01 [INFO] Server started on port 5000
+  2026-06-01 [WARNING] Memory usage above 80%
+  2026-06-01 [INFO] Request handled
+
+Expected output:
+  { "ERROR": 1, "INFO": 2, "WARNING": 1 }
 ```
 
-**Pattern 4: The Test Writer**
+**Exercise Steps:**
+
+1. Give Round 1 prompt to an AI tool — note the quality of output
+2. Give Round 3 prompt — compare the difference
+3. Identify one security or edge case issue in the generated code
+4. Fix it yourself
+
+---
+
+### Key Vocabulary Reference
+
+| Term                   | Definition                                                         |
+| ---------------------- | ------------------------------------------------------------------ |
+| **LLM**                | Large Language Model — neural network trained to predict text      |
+| **Token**              | Small text unit (word, part-word, symbol) processed by the model   |
+| **Context Window**     | Maximum text a model can process in one request                    |
+| **Hallucination**      | Confident but incorrect AI output — a natural property of LLMs     |
+| **Prompt Engineering** | Crafting inputs to get better, more reliable outputs               |
+| **Agentic AI**         | AI that plans, uses tools, and executes multi-step workflows       |
+| **MCP**                | Model Context Protocol — connects AI systems to external tools     |
+| **RAG**                | Retrieval-Augmented Generation — AI searches docs before answering |
+| **Fine-Tuning**        | Training a base model further on specialized data                  |
+| **SQL Injection**      | Attack where malicious SQL is inserted via unsanitized input       |
+
+---
+
+### Lesson Summary
+
 ```
-Write pytest unit tests for this function.
-
-Include tests for:
-- Normal inputs (happy path)
-- Edge cases: [list them]
-- Invalid inputs that should raise exceptions
-
-Use descriptive test function names that explain what is being tested.
-Mock any external dependencies (database, API calls, file I/O).
-
-[paste function code]
-```
-
-**Pattern 5: The Debugger**
-```
-This code throws the following error:
-
-[paste error + full stack trace]
-
-The function is supposed to [describe expected behavior].
-The input when the error occurs is: [describe input]
-
-What is the root cause? Show a corrected version and explain what was wrong.
+┌─────────────────────────────────────────────────────────────┐
+│                    LESSON 04 SUMMARY                        │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ✅ AI is a core part of professional development in 2026   │
+│  ✅ LLMs predict text — they don't understand or verify     │
+│  ✅ Hallucination is real — always review AI output         │
+│  ✅ Agents can plan and execute multi-step tasks            │
+│  ✅ MCP connects AI to real tools and data                  │
+│  ✅ Strong prompts produce dramatically better results      │
+│  ✅ Never trust AI for security-critical code blindly       │
+│  ✅ Never share private data with public AI tools           │
+│  ✅ Use AI to build skill — not to replace learning         │
+│  ✅ The best developers use AI as a multiplier              │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 5. When to Trust AI — and When to Verify
+### Recommended Follow-Up Activities
 
-### High-Trust Scenarios (AI is reliable)
-
-- Generating boilerplate (file structure, class scaffolding, config files)
-- Explaining well-established concepts (how HTTP works, what a hash table is)
-- Translating between languages (Python to JavaScript, SQL to Pandas)
-- Regular expressions (AI excels here — complex syntax, common patterns)
-- Documenting existing code (writing docstrings, README sections)
-- Writing test cases for well-defined functions
-
-### Low-Trust Scenarios (Always verify carefully)
-
-| Scenario | Risk | Mitigation |
-|---|---|---|
-| Security-critical code | Vulnerabilities in auth, crypto, input handling | Security review, use established libraries |
-| Business logic | Subtle misunderstanding of requirements | Explicitly specify invariants, test thoroughly |
-| Performance-sensitive paths | Algorithmically poor choices | Benchmark, check complexity |
-| Cutting-edge or niche topics | Hallucination risk for less-common domains | Cross-reference documentation |
-| Recent API changes | Training cutoff means outdated knowledge | Check official docs for version-specific details |
-| Database queries | SQL injection risks, inefficient query plans | Review query structure, use parameterized queries |
-
-### The Verification Checklist for AI-Generated Code
-
-Before accepting AI output:
-
-- [ ] Does it compile/run without errors?
-- [ ] Does it produce the correct output for normal inputs?
-- [ ] Does it handle the edge cases you specified?
-- [ ] Are there any magic numbers without explanation?
-- [ ] Does it import libraries that don't exist or have different APIs?
-- [ ] Does it use any deprecated functions?
-- [ ] Does it handle exceptions appropriately?
-- [ ] Are there any obvious security issues (hardcoded secrets, string formatting in SQL)?
-- [ ] Would you be comfortable explaining every line of this code in a code review?
+1. Ask Claude or ChatGPT to explain **binary search** in plain English
+2. Implement binary search yourself **without AI help**
+3. Ask AI to review your implementation and suggest improvements
+4. Use GitHub Copilot or Cursor to generate unit tests for a function you wrote
+5. Find and identify one security issue in AI-generated code
+6. Read the OWASP Top 10 list — understand the most common web vulnerabilities
 
 ---
 
-## 6. AI as a Learning Accelerator
+### Further Reading
 
-Beyond code generation, AI tools are powerful for accelerating understanding — if used correctly.
-
-### Learning Patterns
-
-**Explain-then-Implement:**
-Ask Claude to explain a concept (e.g., binary search) in depth, then implement it yourself without AI assistance, then ask AI to review your implementation.
-
-**Socratic Debugging:**
-Instead of asking "what's wrong with this code," ask "what questions should I ask to find the bug in this code?" This builds debugging intuition.
-
-**Concept Comparison:**
-```
-Compare Python's list comprehension vs. generator expressions.
-Explain: when to use each, memory implications, performance differences.
-Show examples where the choice matters.
-```
-
-**Code Walk-throughs:**
-```
-Walk me through this sorting algorithm step by step,
-showing the state of the array at each iteration
-for input: [5, 2, 8, 1, 9, 3]
-```
-
-### What AI Cannot Teach You
-
-- The experience of tracking down a bug for 4 hours (patience, systematic thinking)
-- The intuition built by reading thousands of lines of real code
-- The judgment that comes from shipping software and seeing it fail in production
-- The architectural instincts developed through iterative design and redesign
-
-AI compresses the knowledge acquisition curve. It does not replace the experience curve.
+- [Anthropic Claude Documentation](https://docs.anthropic.com)
+- [OpenAI Developer Documentation](https://platform.openai.com/docs)
+- [GitHub Copilot Documentation](https://docs.github.com/copilot)
+- [Model Context Protocol (MCP) Specification](https://modelcontextprotocol.io)
+- [Prompt Engineering Guide](https://www.promptingguide.ai)
+- [OWASP Top 10 Security Risks](https://owasp.org/Top10)
+- [Cursor Documentation](https://docs.cursor.com)
+- [Prompt Engineering](https://drive.google.com/file/d/1ADc-526c7F42reuF6lKAEtGUy6X-kylH/view)
 
 ---
 
-## 7. Ethical Use of AI in Development
-
-### Attribution and Transparency
-
-Professional norms around AI-generated code are still evolving. Current best practices:
-
-- Check your organization's or client's policy on AI tool use before using them
-- For open-source contributions, many projects now require disclosure of AI assistance
-- AI-generated code may have licensing implications depending on training data — know your context
-
-### Over-Reliance Risk
-
-The most dangerous pattern: a developer who uses AI to write code they cannot understand. This creates:
-
-- **Invisible technical debt** — code that works but no one can maintain
-- **Security blind spots** — vulnerabilities no one recognized because no one read the code carefully
-- **Skill atrophy** — reduced ability to work effectively when AI tools are unavailable
-
-The discipline: **understand before you merge**. If you couldn't write this code yourself (given enough time), you should not ship it without understanding it first.
-
-### Bias in AI Output
-
-AI models reflect their training data. Code generated for security-sensitive applications, user data handling, or anything involving fairness (hiring algorithms, credit scoring, etc.) may reflect or amplify problematic patterns. Apply critical analysis.
-
----
-
-## 8. Practical: Prompt Refinement Exercise
-
-**Original Task:** Build a function that parses log files and extracts error counts by severity level.
-
-**Iteration 1 — Initial prompt:**
-```
-Write a Python function to parse log files
-```
-
-**Iteration 2 — Add structure:**
-```
-Write a Python function to parse a log file and count errors by severity.
-Input: filepath (string)
-Output: dictionary with severity levels as keys and counts as values
-```
-
-**Iteration 3 — Add constraints and edge cases:**
-```
-Write a Python function to parse a structured log file and return error counts by severity.
-
-Log format (one entry per line):
-2024-01-15 10:23:45 [ERROR] Database connection failed
-2024-01-15 10:23:46 [WARNING] Retry attempt 1
-2024-01-15 10:23:50 [INFO] Connection restored
-
-Function signature:
-    def count_log_severity(filepath: str) -> dict[str, int]:
-
-Requirements:
-- Parse severity from between square brackets
-- Case-insensitive severity matching
-- Ignore malformed lines (log them to stderr but don't crash)
-- Handle FileNotFoundError with a descriptive exception
-- Return dict with severity as key (uppercase), count as value
-  e.g., {"ERROR": 12, "WARNING": 45, "INFO": 203}
-
-Edge cases:
-- Empty file → return {}
-- File with no parseable lines → return {}
-- Very large files (>1GB) — use line-by-line reading, not load-all-at-once
-```
-
-Notice how each iteration produces meaningfully better output. Iteration 3 would produce production-quality code; Iteration 1 would produce a toy example requiring significant rework.
-
----
-
-## Key Vocabulary
-
-| Term | Definition |
-|---|---|
-| **LLM** | Large Language Model — a neural network trained to predict text sequences |
-| **Token** | The unit LLMs process — roughly a word or subword fragment |
-| **Context Window** | Maximum amount of text an LLM can consider in one interaction |
-| **Hallucination** | When an LLM generates plausible-sounding but factually incorrect content |
-| **Prompt Engineering** | The practice of designing inputs to AI models to get optimal outputs |
-| **Zero-shot** | Asking a model to perform a task without examples |
-| **Few-shot** | Providing examples within the prompt to guide the model's output |
-| **Temperature** | A parameter controlling randomness in LLM output (higher = more creative/unpredictable) |
-
----
-
-## Summary
-
-- AI coding tools (Copilot, Claude, ChatGPT) accelerate development but require a skilled operator to produce reliable output
-- LLMs predict statistically plausible text — they don't "know" things, which is why hallucination occurs
-- Copilot excels at in-editor completion; Claude/ChatGPT excel at reasoning, review, and explanation
-- Prompt quality directly determines output quality — context, constraints, examples, and edge cases all matter
-- Security-sensitive code, business logic, and anything involving recent APIs require careful verification
-- The ethical risks of AI in development include over-reliance, invisible technical debt, and compliance issues
-- AI accelerates knowledge acquisition — it does not replace the depth of experience built through practice
-
----
-
-## Further Exploration
-
-- **GitHub Copilot Documentation** — settings, privacy, and configuration for your IDE
-- **Anthropic's Claude Usage Guide** — best practices for effective prompting
-- **"Is GitHub Copilot a Threat to Security?"** — research papers on AI code vulnerability patterns
-- **Prompt Engineering Guide** — promptingguide.ai — structured techniques for advanced prompting
-- Try: Take a function you've already written, ask Claude to review it, then critically evaluate whether each suggestion is actually an improvement and why
-
----
-
-*End of Phase 1 — Foundations*
-*Next: Lesson 05 — Python Setup & First Steps*
+_Updated: June 2026 | Phase 1 — Foundations | Lesson 04 of 20_
+_Next: Lesson 05 — Python Setup & First Steps_
