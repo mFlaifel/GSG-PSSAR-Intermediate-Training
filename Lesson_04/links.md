@@ -1,2 +1,4 @@
-https://agentskills.io/home
-https://www.skills.sh
+- https://agentskills.io/home
+- https://www.skills.sh
+- https://www.youtube.com/@ArabicArtificialIntelligence/videos
+- https://www.youtube.com/@NagdyWP/videos
