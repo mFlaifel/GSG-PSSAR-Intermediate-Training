@@ -56,7 +56,7 @@ print(number % 2 == 0)   # False → odd
 
 ---
 
-### 1.2 Operator Precedence (PEMDAS / BODMAS)
+### [1.2 Operator Precedence (PEMDAS / BODMAS)](https://www.w3schools.com/python/python_operators_precedence.asp)
 
 Python follows standard mathematical order of operations:
 
@@ -121,6 +121,8 @@ print(age > 17)     # True
 print(age < 18)     # False
 print(age >= 18)    # True
 print(age <= 17)    # False
+print(5 < age < 20) # True
+print("apple" < "banana") 
 ```
 
 > ⚠️ **Common mistake:** Using `=` (assignment) when you mean `==` (comparison). `x = 5` stores 5; `x == 5` checks if x is 5.

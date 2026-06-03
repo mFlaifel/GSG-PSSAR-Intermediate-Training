@@ -330,16 +330,19 @@ else:
 # Display result
 status = "PASSED ✓" if passed else "FAILED ✗"
 
-print()
-print("=" * 35)
-print(f"  Student : {name}")
-print(f"  Subject : {subject}")
-print(f"  Score   : {score:.1f} / 100")
-print(f"  Grade   : {grade}")
-print(f"  Status  : {status}")
-print("-" * 35)
-print(f"  {feedback}")
-print("=" * 35)
+print(
+    f"""
+===================================
+  Student : {name}
+  Subject : {subject}
+  Score   : {score:.1f} / 100
+  Grade   : {grade}
+  Status  : {status}
+-----------------------------------
+  {feedback}
+===================================
+"""
+)
 ```
 
 ---
