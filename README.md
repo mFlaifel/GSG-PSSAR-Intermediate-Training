@@ -9,7 +9,11 @@
 
 ---
 
-# 40-Hour Course Distribution
+## Resources
+
+- [Python Modules Guide](./python_modules_guide.md)
+- [Python Types Documentation](./python_types.md)
+
 
 ## Phase 1 — Foundations (Sessions 1–4)
 
