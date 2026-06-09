@@ -9,6 +9,7 @@
 By the end of this lesson you will be able to:
 
 - Use `for` loops to iterate over sequences and ranges
+- Loop over strings, lists, and dictionaries
 - Use `while` loops to repeat code while a condition is true
 - Control loop execution with `break`, `continue`, and `else`
 - Apply common loop patterns: counting, summing, searching, and building strings
@@ -16,7 +17,22 @@ By the end of this lesson you will be able to:
 
 ---
 
-## Part 1 — Why Loops? (10 min)
+## Suggested Timing — 100 Minutes
+
+| Part | Topic | Time |
+|------|-------|------|
+| 1 | Why loops? | 8 min |
+| 2 | `for` loops, `range()`, lists, dictionaries, nested loops | 32 min |
+| 3 | `while` loops and input validation | 22 min |
+| 4 | `break`, `continue`, and loop `else` | 18 min |
+| 5 | Common loop patterns | 12 min |
+| 6 | Mini-projects and exercise briefing | 8 min |
+
+> Teaching note: The examples are more than enough for 100 minutes. Pick one mini-project to code live, then leave the other as guided practice or homework.
+
+---
+
+## Part 1 — Why Loops? (8 min)
 
 Imagine printing numbers from 1 to 10,000 without a loop:
 
@@ -38,9 +54,11 @@ Loops are the tool for **repetition** — doing the same thing (or something sli
 
 ---
 
-## Part 2 — The `for` Loop (40 min)
+## Part 2 — The `for` Loop (32 min)
 
-A `for` loop **iterates over a sequence** — running its body once for each item.
+A `for` loop **iterates over an iterable** — running its body once for each item.
+
+Common iterables include strings, ranges, lists, dictionaries, tuples, and sets.
 
 ### 2.1 Iterating Over a String
 
@@ -128,7 +146,78 @@ for index, name in enumerate(students):
 
 ---
 
-### 2.5 Nested `for` Loops
+### 2.5 Iterating Over a Dictionary
+
+A dictionary stores **key-value pairs**. When you loop directly over a dictionary, Python gives you the **keys**.
+
+```python
+student_scores = {
+    "Alice": 92,
+    "Bruno": 78,
+    "Carla": 85
+}
+
+for student in student_scores:
+    print(student)
+```
+
+**Output:**
+```
+Alice
+Bruno
+Carla
+```
+
+Use `.values()` when you only need the values:
+
+```python
+for score in student_scores.values():
+    print(score)
+```
+
+Use `.items()` when you need both the key and the value:
+
+```python
+for student, score in student_scores.items():
+    print(f"{student}: {score}")
+```
+
+**Output:**
+```
+Alice: 92
+Bruno: 78
+Carla: 85
+```
+
+You can also loop over keys explicitly with `.keys()`, but it is usually optional:
+
+```python
+for student in student_scores.keys():
+    print(student)
+```
+
+#### Dictionary Loop Pattern: Filtering
+
+```python
+student_scores = {
+    "Alice": 92,
+    "Bruno": 78,
+    "Carla": 85,
+    "Daniel": 59
+}
+
+for student, score in student_scores.items():
+    if score >= 60:
+        print(f"{student} passed")
+    else:
+        print(f"{student} needs support")
+```
+
+> ⚠️ Avoid adding or removing dictionary keys while looping over the same dictionary. If you need to change the dictionary size, loop over a copy: `for key in list(my_dict):`
+
+---
+
+### 2.6 Nested `for` Loops
 
 A loop inside a loop. The inner loop runs **completely** for each iteration of the outer loop.
 
@@ -153,7 +242,7 @@ for row in range(1, 6):
 
 ---
 
-## Part 3 — The `while` Loop (30 min)
+## Part 3 — The `while` Loop (22 min)
 
 A `while` loop **repeats as long as a condition is `True`**. It's used when you don't know in advance how many times to loop.
 
@@ -239,15 +328,15 @@ print("🚀 Lift off!")
 
 ### 3.5 `for` vs `while` — When to Use Which
 
-| Use `for` when...                       | Use `while` when...                        |
-|-----------------------------------------|--------------------------------------------|
-| You know how many iterations you need   | You don't know how many iterations         |
-| Iterating over a sequence               | Waiting for an event (user input, sensor)  |
-| Working with `range()`                  | Retrying until success                     |
+| Use `for` when...                         | Use `while` when...                        |
+|-------------------------------------------|--------------------------------------------|
+| You have an iterable to process           | You don't know how many iterations         |
+| You know how many iterations you need     | Waiting for an event (user input, sensor)  |
+| Working with `range()`                    | Retrying until success                     |
 
 ---
 
-## Part 4 — `break`, `continue`, and Loop `else` (30 min)
+## Part 4 — `break`, `continue`, and Loop `else` (18 min)
 
 ### 4.1 `break` — Exit the Loop Immediately
 
@@ -322,7 +411,7 @@ else:
 
 ---
 
-## Part 5 — Common Loop Patterns (15 min)
+## Part 5 — Common Loop Patterns (12 min)
 
 These patterns appear constantly in real-world code.
 
@@ -381,9 +470,21 @@ for _ in range(width):   # _ is a convention for "I don't use this variable"
 print(row)   # ********************
 ```
 
+### 5.5 Building a Dictionary
+
+```python
+names = ["Alice", "Bruno", "Carla"]
+name_lengths = {}
+
+for name in names:
+    name_lengths[name] = len(name)
+
+print(name_lengths)   # {'Alice': 5, 'Bruno': 5, 'Carla': 5}
+```
+
 ---
 
-## Part 6 — Mini-Projects (15 min)
+## Part 6 — Mini-Projects (8 min)
 
 ### Project 1: Number Guessing Game (sneak peek at Lesson 10!)
 
@@ -455,13 +556,29 @@ In a `while True` loop, show a menu:
 ```
 Use `break` to exit on option 4. Prevent withdrawals greater than the current balance.
 
+**Exercise 5 — Grade Report with a Dictionary**
+Given this dictionary:
+```python
+grades = {
+    "Alice": 92,
+    "Bruno": 78,
+    "Carla": 85,
+    "Daniel": 59
+}
+```
+Loop over it and print:
+- Each student's name and grade
+- Whether each student passed (`grade >= 60`)
+- The class average
+
 ---
 
 ## 🔑 Key Takeaways
 
-- `for` iterates over a sequence (string, list, range). Use it when you know the count.
+- `for` iterates over an iterable (string, list, dictionary, range). Use it when you know what collection you want to process.
 - `while` repeats while a condition is `True`. Use it when you don't know the count.
 - `range(start, stop, step)` generates integer sequences; `stop` is excluded.
+- Dictionary loops commonly use `.items()` when both key and value are needed.
 - `break` exits a loop immediately; `continue` skips to the next iteration.
 - The `else` block on a loop runs only when no `break` was hit.
 - Classic patterns: accumulator (`total += n`), counter, max/min finder, string builder.
