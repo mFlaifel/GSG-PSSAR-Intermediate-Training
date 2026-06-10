@@ -29,25 +29,25 @@ print(type(10))      # <class 'int'>
 
 | Type | Simple meaning | Example | Changeable? |
 | --- | --- | --- | --- |
-| `str` | Text | `"hello"` | No |
-| `int` | Whole number | `42` | No |
-| `float` | Decimal number | `3.14` | No |
-| `complex` | Real + imaginary number | `3 + 4j` | No |
-| `bool` | True or false | `True` | No |
-| `list` | Ordered items | `[1, 2, 3]` | Yes |
-| `tuple` | Ordered fixed items | `(1, 2, 3)` | No |
-| `range` | Sequence of numbers | `range(5)` | No |
-| `dict` | Key-value data | `{"name": "Ali"}` | Yes |
-| `set` | Unique unordered items | `{1, 2, 3}` | Yes |
-| `frozenset` | Fixed set | `frozenset({1, 2})` | No |
-| `bytes` | Raw binary data | `b"abc"` | No |
-| `bytearray` | Changeable binary data | `bytearray(b"abc")` | Yes |
-| `memoryview` | View of binary data | `memoryview(b"abc")` | Depends on source |
-| `NoneType` | No value | `None` | No |
+| [`str`](#1.-text-type-str) | Text | `"hello"` | No |
+| [`int`](#2.-numeric-types) | Whole number | `42` | No |
+| [`float`](#2.-numeric-types) | Decimal number | `3.14` | No |
+| [`complex`](#2.-numeric-types) | Real + imaginary number | `3 + 4j` | No |
+| [`bool`](#3.-boolean-type-bool) | True or false | `True` | No |
+| [`list`](#4.-lists-list) | Ordered items | `[1, 2, 3]` | Yes |
+| [`tuple`](#5.-tuples-tuple) | Ordered fixed items | `(1, 2, 3)` | No |
+| [`range`](#6.-ranges-range) | Sequence of numbers | `range(5)` | No |
+| [`dict`](#7.-dictionaries-dict) | Key-value data | `{"name": "Ali"}` | Yes |
+| [`set`](#8.-sets-set-and-frozenset) | Unique unordered items | `{1, 2, 3}` | Yes |
+| [`frozenset`](#8.-sets-set-and-frozenset) | Fixed set | `frozenset({1, 2})` | No |
+| [`bytes`](#9.-binary-types) | Raw binary data | `b"abc"` | No |
+| [`bytearray`](#9.-binary-types) | Changeable binary data | `bytearray(b"abc")` | Yes |
+| [`memoryview`](#9.-binary-types) | View of binary data | `memoryview(b"abc")` | Depends on source |
+| [`NoneType`](#10.-no-value-none) | No value | `None` | No |
 
-## 1. Text Type: `str`
+## 1. Text Type: [`str`](#1.-text-type-str)
 
-Use `str` for text.
+Use [`str`](#1.-text-type-str) for text.
 
 ```python
 message = "Hello, Python"
@@ -89,11 +89,11 @@ print(f"{name} is {age} years old")
 
 ## 2. Numeric Types
 
-Python has three main number types: `int`, `float`, and `complex`.
+Python has three main number types: [`int`](#2.-numeric-types), [`float`](#2.-numeric-types), and [`complex`](#2.-numeric-types).
 
-### `int`
+### [`int`](#2.-numeric-types)
 
-Use `int` for whole numbers.
+Use [`int`](#2.-numeric-types) for whole numbers.
 
 ```python
 count = 10
@@ -109,9 +109,9 @@ very_big = 999999999999999999999999999999
 print(type(very_big)) # <class 'int'>
 ```
 
-### `float`
+### [`float`](#2.-numeric-types)
 
-Use `float` for decimal numbers.
+Use [`float`](#2.-numeric-types) for decimal numbers.
 
 ```python
 price = 19.99
@@ -125,11 +125,11 @@ Be careful with float precision:
 print(0.1 + 0.2) # 0.30000000000000004
 ```
 
-This happens because computers store many decimal numbers as approximations. For money, consider using `decimal.Decimal` instead of `float`.
+This happens because computers store many decimal numbers as approximations. For money, consider using `decimal.Decimal` instead of [`float`](#2.-numeric-types).
 
-### `complex`
+### [`complex`](#2.-numeric-types)
 
-Use `complex` for numbers with a real part and an imaginary part. This is common in math, science, and engineering.
+Use [`complex`](#2.-numeric-types) for numbers with a real part and an imaginary part. This is common in math, science, and engineering.
 
 ```python
 z = 3 + 4j
@@ -154,9 +154,9 @@ print(a % b)  # 1, remainder
 print(a ** b) # 1000, exponent
 ```
 
-## 3. Boolean Type: `bool`
+## 3. Boolean Type: [`bool`](#3.-boolean-type-bool)
 
-`bool` has only two values: `True` and `False`.
+[`bool`](#3.-boolean-type-bool) has only two values: `True` and `False`.
 
 ```python
 is_active = True
@@ -197,7 +197,7 @@ if [1, 2, 3]:
     print("This also runs")
 ```
 
-A useful detail: `bool` is a subclass of `int`.
+A useful detail: [`bool`](#3.-boolean-type-bool) is a subclass of [`int`](#2.-numeric-types).
 
 ```python
 print(True + True) # 2
@@ -205,7 +205,7 @@ print(True + True) # 2
 
 You usually should not rely on that behavior, but it explains why the example works.
 
-## 4. Lists: `list`
+## 4. Lists: [`list`](#4.-lists-list)
 
 A list stores multiple values in order. Lists are changeable.
 
@@ -241,7 +241,7 @@ Use a list when:
 - You need to add, remove, or update items.
 - Duplicate values are allowed.
 
-## 5. Tuples: `tuple`
+## 5. Tuples: [`tuple`](#5.-tuples-tuple)
 
 A tuple is an ordered collection that cannot be changed after it is created.
 
@@ -279,9 +279,9 @@ Use a tuple when:
 - The values should not change.
 - You want a lightweight fixed structure.
 
-## 6. Ranges: `range`
+## 6. Ranges: [`range`](#6.-ranges-range)
 
-A `range` represents a sequence of numbers. It is commonly used in loops.
+A [`range`](#6.-ranges-range) represents a sequence of numbers. It is commonly used in loops.
 
 ```python
 for number in range(5):
@@ -306,9 +306,9 @@ range(2, 6)     # 2, 3, 4, 5
 range(0, 10, 2) # 0, 2, 4, 6, 8
 ```
 
-A `range` does not store every number in memory. It creates numbers when needed, so it is memory-efficient.
+A [`range`](#6.-ranges-range) does not store every number in memory. It creates numbers when needed, so it is memory-efficient.
 
-## 7. Dictionaries: `dict`
+## 7. Dictionaries: [`dict`](#7.-dictionaries-dict)
 
 A dictionary stores key-value pairs. Use it when each value has a label.
 
@@ -343,7 +343,7 @@ for key, value in person.items():
     print(key, value)
 ```
 
-Dictionary keys must be hashable. Common key types are `str`, `int`, and `tuple`.
+Dictionary keys must be hashable. Common key types are [`str`](#1.-text-type-str), [`int`](#2.-numeric-types), and [`tuple`](#5.-tuples-tuple).
 
 ```python
 scores = {
@@ -358,7 +358,7 @@ Use a dictionary when:
 - Your data has labels.
 - You are representing an object-like structure.
 
-## 8. Sets: `set` and `frozenset`
+## 8. Sets: [`set`](#8.-sets-set-and-frozenset) and [`frozenset`](#8.-sets-set-and-frozenset)
 
 A set stores unique values. It removes duplicates automatically.
 
@@ -394,22 +394,22 @@ if "Sara" in allowed_users:
     print("Allowed")
 ```
 
-A `frozenset` is an immutable set.
+A [`frozenset`](#8.-sets-set-and-frozenset) is an immutable set.
 
 ```python
 fixed = frozenset([1, 2, 2, 3])
 print(fixed) # frozenset({1, 2, 3})
 ```
 
-Use `frozenset` when you need a set that cannot change, or when you need to use a set-like value as a dictionary key.
+Use [`frozenset`](#8.-sets-set-and-frozenset) when you need a set that cannot change, or when you need to use a set-like value as a dictionary key.
 
 ## 9. Binary Types
 
 Binary types store raw bytes. You usually use them when working with files, images, network data, encryption, or encoded text.
 
-### `bytes`
+### [`bytes`](#9.-binary-types)
 
-`bytes` is immutable binary data.
+[`bytes`](#9.-binary-types) is immutable binary data.
 
 ```python
 data = b"hello"
@@ -427,9 +427,9 @@ encoded = text.encode("utf-8")
 print(encoded) # b'hello'
 ```
 
-### `bytearray`
+### [`bytearray`](#9.-binary-types)
 
-`bytearray` is like `bytes`, but changeable.
+[`bytearray`](#9.-binary-types) is like [`bytes`](#9.-binary-types), but changeable.
 
 ```python
 data = bytearray(b"hello")
@@ -439,9 +439,9 @@ data.append(33)
 print(data) # bytearray(b'Hello!')
 ```
 
-### `memoryview`
+### [`memoryview`](#9.-binary-types)
 
-`memoryview` lets you look at binary data without copying it.
+[`memoryview`](#9.-binary-types) lets you look at binary data without copying it.
 
 ```python
 data = bytearray(b"hello world")
@@ -484,10 +484,10 @@ A mutable value can be changed after it is created.
 
 Mutable types include:
 
-- `list`
-- `dict`
-- `set`
-- `bytearray`
+- [`list`](#4.-lists-list)
+- [`dict`](#7.-dictionaries-dict)
+- [`set`](#8.-sets-set-and-frozenset)
+- [`bytearray`](#9.-binary-types)
 
 Example:
 
@@ -502,16 +502,16 @@ An immutable value cannot be changed after it is created.
 
 Immutable types include:
 
-- `str`
-- `int`
-- `float`
-- `complex`
-- `bool`
-- `tuple`
-- `range`
-- `frozenset`
-- `bytes`
-- `NoneType`
+- [`str`](#1.-text-type-str)
+- [`int`](#2.-numeric-types)
+- [`float`](#2.-numeric-types)
+- [`complex`](#2.-numeric-types)
+- [`bool`](#3.-boolean-type-bool)
+- [`tuple`](#5.-tuples-tuple)
+- [`range`](#6.-ranges-range)
+- [`frozenset`](#8.-sets-set-and-frozenset)
+- [`bytes`](#9.-binary-types)
+- [`NoneType`](#10.-no-value-none)
 
 Example:
 
@@ -894,15 +894,15 @@ if value == None:
 
 ## Final Summary
 
-- `str` is for text.
-- `int`, `float`, and `complex` are for numbers.
-- `bool` is for `True` and `False`.
-- `list` is for ordered items that can change.
-- `tuple` is for ordered items that should stay fixed.
-- `range` is for number sequences, often in loops.
-- `dict` is for key-value data.
-- `set` is for unique values.
-- `bytes`, `bytearray`, and `memoryview` are for binary data.
+- [`str`](#1.-text-type-str) is for text.
+- [`int`](#2.-numeric-types), [`float`](#2.-numeric-types), and [`complex`](#2.-numeric-types) are for numbers.
+- [`bool`](#3.-boolean-type-bool) is for `True` and `False`.
+- [`list`](#4.-lists-list) is for ordered items that can change.
+- [`tuple`](#5.-tuples-tuple) is for ordered items that should stay fixed.
+- [`range`](#6.-ranges-range) is for number sequences, often in loops.
+- [`dict`](#7.-dictionaries-dict) is for key-value data.
+- [`set`](#8.-sets-set-and-frozenset) is for unique values.
+- [`bytes`](#9.-binary-types), [`bytearray`](#9.-binary-types), and [`memoryview`](#9.-binary-types) are for binary data.
 - `None` means no value.
 - `isinstance()` is usually the best way to check a type.
 - Type hints help explain your code, but they do not change how Python runs it.
