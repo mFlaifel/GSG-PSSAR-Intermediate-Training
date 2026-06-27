@@ -144,6 +144,9 @@ import os
 
 print(os.getcwd())
 print(os.listdir("."))
+
+data_path = os.path.join("data", "tasks.txt")
+print(data_path)
 ```
 
 `pathlib` gives a modern object-based way to work with paths.
@@ -210,6 +213,8 @@ That code runs when the file is executed directly, but not when the file is impo
 ---
 
 ## Part 5 - Third-Party Packages and `pip` (20 min)
+
+[Don't forget to create virtual environment](./venv.md)
 
 Third-party packages are created outside the Python standard library.
 

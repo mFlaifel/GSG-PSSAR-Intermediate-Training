@@ -56,7 +56,7 @@ This lesson connects Lesson 11 functions, Lesson 12 lists, and Lesson 13 diction
 
 ### 2.1 Basic File Reading
 
-Use `with open(...)` so Python closes the file automatically.
+[Use `with open(...)` so Python closes the file automatically.](./why_use_with_to_open_file.md)
 
 ```python
 with open("notes.txt", "r") as file:
