@@ -16,11 +16,20 @@ By the end of this session, students will be able to:
 
 ---
 
-## Why This Matters (Framing — 5 min)
+## Big Idea
 
-Students have spent 15 sessions inside Python — a single program running top to bottom on one machine. Today the mental model changes: **two separate computers, talking to each other over a network, each running different code.** This is the single biggest shift in Phase 4, so it's worth naming explicitly before diving into mechanics.
+So far, most of the course has focused on one program running on one machine. The web changes that mental model: **two computers talk to each other over a network, and each one has a different job.**
 
 > "Every time you've ever loaded a webpage, two strangers' computers had a conversation in under a second, and one of them sent code the other didn't have."
+
+### Today's Roadmap
+
+In this lesson, students answer four practical questions:
+
+1. Who asks for a webpage?
+2. Who sends the webpage back?
+3. What exactly travels across the network?
+4. How can we inspect that conversation in the browser?
 
 ---
 
@@ -54,10 +63,10 @@ Every website involves at least two machines:
         RESPONSE
 ```
 
-- **Client**: the browser (Chrome, Firefox, Safari) running on the student's laptop or phone. Its job is to *ask* for things and *render* what comes back.
+- **Client**: the browser (Chrome, Firefox, Safari) running on a laptop or phone. Its job is to *ask* for things and *render* what comes back.
 - **Server**: a computer somewhere else — often in a data center — that *listens* for requests and *responds* with data.
 
-Key point to hammer home: **the server doesn't know or care what device is asking.** It could be a laptop, a phone, or another program. It just receives a request and sends a response. This is why the same website works on every device — the server sends the same HTML/CSS/JS, and each client's browser is responsible for displaying it.
+Key point: **the server usually does not need to know what kind of device is asking.** It could be a laptop, a phone, or another program. The server receives a request and sends a response. The browser is responsible for displaying what comes back.
 
 **Analogy**: Ordering at a restaurant.
 - You (client) don't cook — you request.
@@ -65,7 +74,12 @@ Key point to hammer home: **the server doesn't know or care what device is askin
 - The waiter carrying the ticket back and forth is the *network*.
 
 ### Quick Check
-Ask students: "When you watch a YouTube video, which machine is the client and which is the server?" (Their device = client; Google's video servers = server.)
+
+Ask: "When you watch a YouTube video, which machine is the client and which is the server?"
+
+Expected answer:
+- Your device/browser = client
+- YouTube's computers = server
 
 ---
 
@@ -109,6 +123,16 @@ Walk through this sequence on the board or in an ASCII diagram, one step at a ti
 10. Browser RENDERS the final page — this is what you see
 ```
 
+### Plain-English Version
+
+When you type a URL, the browser:
+
+1. Finds the server's address
+2. Connects to that server
+3. Asks for a specific page
+4. Receives files back
+5. Builds the visible page from those files
+
 ### DNS — The Internet's Phonebook
 
 Explain that computers only understand IP addresses (e.g. `93.184.216.34`), not names like `google.com`. DNS (Domain Name System) is the lookup service that converts a human-friendly name into the machine address needed to actually connect.
@@ -120,7 +144,7 @@ Explain that computers only understand IP addresses (e.g. `93.184.216.34`), not 
 
 ### The Roles of HTML, CSS, and JavaScript
 
-This is the moment to introduce the three technologies students will spend Lessons 17–18 on. Use a house-building analogy:
+These are the three core frontend technologies students will use in Lessons 17–18. A useful house-building analogy:
 
 | Technology | Role                         | Analogy              |
 | ---------- | ---------------------------- | --------------------- |
@@ -129,6 +153,16 @@ This is the moment to introduce the three technologies students will spend Lesso
 | **JavaScript** | Behavior and interactivity | Electricity — makes things move, respond, react |
 
 A page with only HTML is a plain, unstyled house. CSS makes it look intentional. JavaScript makes it *do* things — respond to clicks, update without reloading, validate a form.
+
+### Check for Understanding
+
+Ask students to complete these sentences:
+
+- HTML controls the page's ___.
+- CSS controls the page's ___.
+- JavaScript controls the page's ___.
+
+Expected answers: structure/content, appearance/layout, behavior/interactivity.
 
 ---
 
@@ -160,6 +194,20 @@ Headers are extra information attached to a request or response — metadata, no
 
 Keep this light — headers get revisited in Lesson 19 when students build their own Flask server.
 
+### Tiny Example: Request and Response
+
+```http
+GET / HTTP/1.1
+Host: example.com
+```
+
+```http
+HTTP/1.1 200 OK
+Content-Type: text/html
+```
+
+Read this as: "The client asked for the homepage. The server said the request worked and sent back HTML."
+
 ---
 
 ## 4. Live Demo: Browser DevTools (15 min)
@@ -188,6 +236,14 @@ Have students, on their own laptops:
    - The `Content-Type` of the main HTML response
    - How many total requests the page made to load
 
+### Success Checklist
+
+By the end of the activity, each student should be able to point to:
+
+- One row in the Network tab and say, "This is one request/response pair."
+- One status code and explain whether it means success or error.
+- The main HTML document request that started the page load.
+
 ---
 
 ## Common Points of Confusion
@@ -195,6 +251,7 @@ Have students, on their own laptops:
 - **"Is the internet the same as the web?"** No — the internet is the physical/network infrastructure; the web (HTTP, browsers, websites) is one application that runs on top of it, like email or gaming.
 - **"Why does the same URL sometimes show a different page?"** Servers can return different content based on the request (login state, location, time) — the URL is a request, not a guarantee of fixed content.
 - **Confusing client and server direction** — reinforce with the restaurant analogy if this comes up.
+- **"Is HTML a programming language?"** HTML describes structure and content. It does not contain logic like Python or JavaScript.
 
 ---
 
@@ -204,6 +261,12 @@ Have students, on their own laptops:
    - How many total requests were made
    - One HTML request and its status code
 2. In 2–3 sentences, explain in your own words what a "client" and a "server" are — no copying definitions, use your own analogy.
+
+### Exit Ticket
+
+Before leaving, students answer in one sentence:
+
+> What is one thing your browser does after it receives HTML from a server?
 
 ---
 

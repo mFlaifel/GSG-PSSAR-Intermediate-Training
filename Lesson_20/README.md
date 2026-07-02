@@ -16,6 +16,26 @@ By the end of this session, students will be able to:
 
 ---
 
+## Big Idea
+
+This final session turns the course into one complete loop:
+
+**Python logic → Flask route → JSON response → JavaScript fetch → DOM update**
+
+Students do not need to build a large app. The goal is to build a small app where every layer connects.
+
+### Today's Build
+
+Each student or pair will create a mini full-stack project with:
+
+- A Flask backend
+- At least one JSON API route
+- A frontend page
+- JavaScript that calls the backend using `fetch()`
+- A short presentation of what they built
+
+---
+
 ## Timed Breakdown
 
 | Time      | Segment                                     | Format                |
@@ -27,7 +47,7 @@ By the end of this session, students will be able to:
 | 1:15–1:25 | **Break**                                       | —                          |
 | 1:25–1:45 | Continued work time + roaming support             | Independent/paired work      |
 | 1:45–2:00 | Mini-presentations / share-outs                  | Student-led                 |
-| — (extend or follow-up) | Career paths & next steps           | Discussion                  |
+| If time allows | Career paths & next steps                 | Discussion                  |
 
 > **Facilitator note**: this session runs tight. If class size is large, consider extending presentations into a follow-up session, or capping each share-out to 60–90 seconds so everyone gets a turn.
 
@@ -45,7 +65,7 @@ Phase 4 → HTML, CSS, JS — the FRONTEND (what users see)
 Phase 5 → Flask, APIs — the BACKEND (what powers it)
 ```
 
-Today's project uses a piece from every phase. This is worth saying out loud — many students won't have noticed how much they've accumulated until it's named.
+Today's project uses a piece from every phase. Say this clearly so students can recognize how much they have built up across the course.
 
 ---
 
@@ -69,6 +89,34 @@ Students build a small application with:
 | Mini quiz app               | Store questions, check answers              | Show question, check click, show result |
 
 Keep scope deliberately small — the goal is *connecting the full pipeline end-to-end*, not building something elaborate.
+
+### Minimum Project Requirements
+
+Every project should include:
+
+- `app.py`
+- A `static/index.html` file
+- At least one Flask route that returns JSON
+- At least one `fetch()` call in JavaScript
+- At least one DOM update based on the response
+
+Recommended folder structure:
+
+```text
+project/
+├── app.py
+└── static/
+    └── index.html
+```
+
+### Good Scope vs. Too Much Scope
+
+| Good for today | Too much for today |
+| -------------- | ------------------ |
+| One button, one API route, one result | Login system |
+| A small list stored in Python | Full database setup |
+| Simple styling | Complex responsive design |
+| One calculation | Many pages and features |
 
 ---
 
@@ -145,6 +193,20 @@ if __name__ == "__main__":
 
 Note on file structure: Flask looks for frontend files in a `static/` folder by default — mention this briefly so students don't lose time to a file-path error mid-build.
 
+### Full Pipeline Trace
+
+When the button is clicked:
+
+1. JavaScript runs the click handler
+2. `fetch("/api/quote")` sends a GET request
+3. Flask receives the request at `/api/quote`
+4. Python chooses a random quote
+5. Flask returns JSON
+6. JavaScript reads the JSON
+7. The DOM updates on the page
+
+This is the whole course working together.
+
 ---
 
 ## 4. Structured Work Time (45 min total, with break)
@@ -158,15 +220,39 @@ Let students choose to work solo or in pairs. Circulate constantly — this sess
 
 This staged pacing mirrors the debugging methodology from Lesson 03 — build the smallest working piece first, then extend.
 
+### Debugging Order
+
+When something breaks, check in this order:
+
+1. Is the Flask server running?
+2. Does the API route work directly in the browser?
+3. Is `index.html` loading from the `static/` folder?
+4. Does the button click handler run? Use `console.log("clicked")`.
+5. Does `fetch()` return data? Log the `data` object.
+6. Is the DOM selector correct?
+
+This gives students a calm path through the most common capstone bugs.
+
 ---
 
 ## 5. Mini-Presentations (15 min)
 
 Each student or pair gets ~60–90 seconds to:
+
 1. Show their project running
 2. Name one thing that was tricky and how they solved it (or didn't yet — that's fine)
 
-Keep the tone celebratory, not evaluative — this is a capstone of a first course, not a certification exam.
+Keep the tone celebratory, not evaluative. The goal is to help students notice what they can now build.
+
+### Presentation Prompts
+
+Students can use this simple script:
+
+- "My project is..."
+- "The Flask route does..."
+- "The JavaScript fetches..."
+- "One problem I solved was..."
+- "One thing I would add next is..."
 
 ---
 
@@ -190,6 +276,14 @@ Briefly map the paths that build on what was just covered, without diving deep i
 - Building small personal projects — the single best predictor of continued growth after any bootcamp-style course
 - Continuing to use AI tools deliberately (Lesson 04) as a learning accelerator, not a shortcut around understanding
 
+### Suggested Next Projects
+
+- Improve the capstone with better styling
+- Add a second API route
+- Save data to a file
+- Rebuild a small page from a website they like
+- Create a GitHub profile and publish one project
+
 ### Closing Framing
 
 Bring the course back to its opening line from Lesson 01 (or Mohammed's preferred framing): the course started with *how to think*, not *what to type*. That mindset — decomposition, debugging, reading errors, breaking problems down — is the actual transferable skill; every specific tool covered (Flask, this version of JavaScript, this specific syntax) will change over a career, but the thinking underneath it won't.
@@ -201,6 +295,8 @@ Bring the course back to its opening line from Lesson 01 (or Mohammed's preferre
 - File path issues serving the HTML from Flask's `static/` folder
 - Forgetting `.then()` chaining syntax in `fetch()` — easy to drop a `.then()` or misplace a bracket
 - Scope creep — pairs trying to build something too large for the time available; redirect toward the smallest working version early
+- Forgetting that `fetch("/api/quote")` only works when the HTML is served by Flask, not opened directly as a local file
+- Updating the wrong DOM element because the selector does not match the HTML
 
 ---
 
@@ -214,4 +310,4 @@ Bring the course back to its opening line from Lesson 01 (or Mohammed's preferre
 
 ## Course Complete
 
-This closes all 20 sessions across the 5 phases — from computational thinking with no prior background, through Python fundamentals and advanced topics, into a working full-stack mini-project. Students should leave with both the technical foundation and, more importantly, the mindset to keep learning independently.
+This closes all 20 sessions across the 5 phases — from computational thinking with no prior background, through Python fundamentals and advanced topics, into a working full-stack mini-project. Students should leave with a technical foundation and the confidence to keep learning independently.

@@ -17,6 +17,21 @@ By the end of this session, students will be able to:
 
 ---
 
+## Big Idea
+
+In Lessons 16–18, students mostly acted as the browser/client. In this lesson, they build the other side of the conversation: **a Python server that receives requests and sends responses.**
+
+### Today's Build
+
+Students will create:
+
+- A tiny Flask app
+- One route that returns plain text
+- One route that returns JSON
+- One Python script that calls someone else's API using `requests`
+
+---
+
 ## Timed Breakdown
 
 | Time      | Segment                                    | Format               |
@@ -49,12 +64,15 @@ Revisit the client-server diagram from Lesson 16, but now flip the perspective: 
 ```
 
 A server is just a program that:
+
 1. Stays running and **listens** on a network port
 2. **Receives** incoming requests
 3. **Decides** what to do based on the request (which URL, which verb)
 4. **Sends back** a response
 
-That's it — a server is not magic, it's a Python program with an extra job: staying alive and listening.
+That's the core idea: a server is a Python program with an extra job, which is staying alive and listening for requests.
+
+Plain-English summary: a route is a URL path connected to a Python function.
 
 ---
 
@@ -63,6 +81,8 @@ That's it — a server is not magic, it's a Python program with an extra job: st
 ### What Is an API?
 
 An **API (Application Programming Interface)** is a defined way for two programs to talk to each other. A **REST API** is a common style of API built on top of HTTP — the same protocol from Lesson 16.
+
+Simple way to say it: an API is a menu of actions or data that another program is allowed to request.
 
 ### JSON — The Common Language
 
@@ -105,6 +125,12 @@ Students saw this table in Lesson 16 as a preview. Now it becomes something they
 pip install flask
 ```
 
+If `pip` does not work on a student's machine, try:
+
+```bash
+python -m pip install flask
+```
+
 ### Minimal App
 
 ```python
@@ -128,6 +154,8 @@ python app.py
 
 Then open `http://127.0.0.1:5000` in the browser — **this is the moment to connect everything back to Lesson 16.** The browser (client) sends a GET request to `127.0.0.1:5000/`, Flask (server) matches the `/` route, runs `home()`, and sends the returned string back as the response body.
 
+`127.0.0.1` means "this computer." Students are visiting a server running on their own machine.
+
 ### Explaining the Code
 
 | Line                        | What it does                                        |
@@ -139,6 +167,12 @@ Then open `http://127.0.0.1:5000` in the browser — **this is the moment to con
 | `app.run(debug=True)`         | Starts the server listening for requests                  |
 
 > `debug=True` auto-reloads the server on code changes and shows detailed error pages — useful for learning, should be turned off in production (worth one sentence, not a detour).
+
+### Quick Check
+
+Ask: "What happens if we change the route from `/` to `/hello`?"
+
+Expected answer: the app will respond at `http://127.0.0.1:5000/hello`; the old homepage route `/` will no longer match unless we keep both routes.
 
 ---
 
@@ -170,6 +204,8 @@ if __name__ == "__main__":
 
 Visit `http://127.0.0.1:5000/api/student` — the browser displays raw JSON. This is precisely what a real-world API endpoint looks like (weather APIs, social media APIs, etc. — connect to whatever API is used in the next section).
 
+Plain-English summary: `jsonify()` turns Python data into an HTTP response that other programs can easily read.
+
 ### Route Parameters (brief extension)
 
 ```python
@@ -180,6 +216,15 @@ def greet(name):
 
 Visiting `/api/greet/Sara` returns `{"message": "Hello, Sara!"}` — show how the URL itself can carry data into the function.
 
+### JSON Route Checklist
+
+Before moving on, students should confirm:
+
+- The Flask server is running
+- `/` returns plain text
+- `/api/student` returns JSON
+- The browser URL matches the route exactly
+
 ---
 
 ## 5. Reading API Data with `requests` (15 min)
@@ -188,6 +233,12 @@ Flip perspective one more time: now Python acts as the *client*, requesting data
 
 ```bash
 pip install requests
+```
+
+If needed:
+
+```bash
+python -m pip install requests
 ```
 
 ```python
@@ -208,11 +259,22 @@ print(data["public_repos"])
 
 Use any free, no-auth public API for the live demo (a public REST test API, or GitHub's user endpoint as above) so nothing blocks on setting up API keys mid-lecture.
 
+### Direction Check
+
+This lesson uses the word "request" in two directions:
+
+| Situation | Your Code's Role | What Happens |
+| --------- | ---------------- | ------------ |
+| Flask route | Server | Receives a request from a browser |
+| `requests.get(...)` script | Client | Sends a request to another server |
+
+This distinction is worth repeating because the names are similar.
+
 ---
 
 ## 6. Database Overview — Conceptual Only (10 min)
 
-Keep this section high-level; a full database module is out of scope for this course, but students should leave with orientation, not implementation depth.
+Keep this section high-level. A full database module is out of scope for this course, but students should leave knowing what a database is for.
 
 ```
    YOUR APP                      DATABASE
@@ -236,9 +298,20 @@ Without a database, data typed into an app disappears the moment the server rest
 ## Hands-On Activity (woven into the live coding above)
 
 By the end of the session, each student should have, running locally:
+
 1. A Flask app with at least two routes
 2. One route returning plain text, one returning JSON via `jsonify`
 3. A separate small script using `requests` to call a public API and print one field from the response
+
+### Success Checklist
+
+Students are ready for Lesson 20 if they can:
+
+- Start the Flask server
+- Visit a route in the browser
+- Explain what a route does
+- Return JSON from Flask
+- Use `requests.get()` and read one value from the returned JSON
 
 ---
 
@@ -246,8 +319,9 @@ By the end of the session, each student should have, running locally:
 
 - Forgetting `pip install flask` / `pip install requests` before running
 - Route path typos (`/api/student` vs `/api/students`) — reinforce careful reading, same muscle as reading Python tracebacks (Lesson 03)
-- Trying to return a raw Python dict instead of using `jsonify()` — Flask needs the conversion step
+- Returning data inconsistently — for this course, use `jsonify()` for JSON responses so the intent is clear
 - Confusing the Flask server's `requests` (incoming, handled by routes) with the `requests` *library* (outgoing, used to call other APIs) — same word, opposite direction. Worth explicitly disambiguating.
+- Forgetting that the Flask terminal must stay running while testing the app in the browser
 
 ---
 
@@ -256,6 +330,12 @@ By the end of the session, each student should have, running locally:
 1. Add a third route to your Flask app that accepts a name via the URL (like the `/api/greet/<name>` example) and returns a personalized JSON message
 2. Find one free public API online, use `requests` to call it, and print two different fields from the response
 3. In 2–3 sentences: explain the difference between your Flask app acting as a *server* and your `requests` script acting as a *client*
+
+### Exit Ticket
+
+Before leaving, students answer:
+
+> What is the difference between visiting `/api/student` in the browser and calling an outside API with `requests.get()`?
 
 ---
 

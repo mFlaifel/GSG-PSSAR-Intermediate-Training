@@ -17,6 +17,25 @@ By the end of this session, students will be able to:
 
 ---
 
+## Big Idea
+
+HTML and CSS are the first tools students use to create something visible in the browser.
+
+- **HTML** answers: "What is on the page?"
+- **CSS** answers: "How should it look?"
+
+### Today's Build
+
+Students will create a small personal profile page with:
+
+- A heading and short bio
+- A list of skills or interests
+- Semantic page sections
+- A linked `style.css` file
+- At least one reusable CSS class
+
+---
+
 ## Timed Breakdown
 
 | Time      | Segment                              | Format                |
@@ -34,7 +53,7 @@ By the end of this session, students will be able to:
 
 ## 1. HTML Document Structure (25 min)
 
-Every HTML page follows the same skeleton. Type this live and explain each line as you go:
+Every HTML page follows the same basic skeleton. Type this live and explain each line as you go:
 
 ```html
 <!DOCTYPE html>
@@ -57,6 +76,8 @@ Every HTML page follows the same skeleton. Type this live and explain each line 
 | `<head>`                   | Metadata — not visible on the page itself           |
 | `<title>`                  | Text shown in the browser tab                       |
 | `<body>`                   | Everything the user actually *sees*                 |
+
+Plain-English summary: the `<head>` is information *about* the page; the `<body>` is the page itself.
 
 ### Tags Come in Pairs (Mostly)
 
@@ -81,6 +102,16 @@ Some tags are **self-closing** — they don't wrap content: `<img>`, `<br>`, `<i
 | `<span>`            | Generic inline container |
 
 > Emphasize: HTML describes *what things are*, not *how they look*. That's CSS's job — coming up in 45 minutes.
+
+### Mini Practice
+
+Ask students to write three lines of HTML:
+
+1. Their name as a heading
+2. One sentence about themselves
+3. A link to a website they use often
+
+This gives them a quick win before the longer profile-page activity.
 
 ### Nesting
 
@@ -129,7 +160,9 @@ A page built entirely from `<div>` tags works, but tells the browser (and screen
 </body>
 ```
 
-**Why it matters**: semantic tags improve accessibility (screen readers announce "navigation" or "main content"), SEO, and — practically — make code easier for other developers (and AI tools, tying back to Lesson 04) to understand at a glance.
+**Why it matters**: semantic tags improve accessibility, help search engines understand the page, and make code easier for other developers to read.
+
+Plain-English rule: use a semantic tag when the section has a clear meaning; use `<div>` when you only need a generic container.
 
 ---
 
@@ -190,6 +223,20 @@ Recommend external stylesheets from day one — it mirrors separating logic acro
 
 > Rule of thumb for students: **classes for anything reusable, IDs for anything unique.**
 
+### Selector Practice
+
+Given this HTML:
+
+```html
+<p class="warning" id="main-warning">Be careful.</p>
+```
+
+Ask:
+
+- Which selector targets every paragraph? `p`
+- Which selector targets the reusable class? `.warning`
+- Which selector targets the unique ID? `#main-warning`
+
 ### The Box Model
 
 Every HTML element is a rectangular box made of four layers:
@@ -224,7 +271,17 @@ Every HTML element is a rectangular box made of four layers:
 }
 ```
 
-This single diagram resolves 80% of beginner CSS layout confusion — spend real time here.
+This diagram is worth slowing down for because many beginner layout problems come from mixing up margin and padding.
+
+### Box Model Check
+
+Ask: "If I want more space between the text and its border, should I use `padding` or `margin`?"
+
+Expected answer: `padding`.
+
+Ask: "If I want more space between this box and the next box, should I use `padding` or `margin`?"
+
+Expected answer: `margin`.
 
 ---
 
@@ -254,7 +311,7 @@ h1 {
 
 ### Basic Layout: `display`
 
-Mention just enough to unblock the activity — full layout systems (Flexbox/Grid) are beyond this course's scope, but students should know these two exist:
+Mention just enough to unblock the activity. Full layout systems like Flexbox and Grid are beyond this lesson's scope, but students should know these two values:
 
 ```css
 .inline-item { display: inline-block; }
@@ -301,6 +358,16 @@ Students build a single-page HTML + CSS profile with:
 
 Circulate during this time — this is the first moment students write HTML/CSS unassisted, so expect syntax errors (unclosed tags, missing semicolons) and use them as live teaching moments.
 
+### Success Checklist
+
+A complete first version should have:
+
+- `index.html` and `style.css` in the same folder
+- A working `<link rel="stylesheet" href="style.css">`
+- At least one semantic element such as `<header>` or `<main>`
+- At least one class used in both HTML and CSS
+- Text that is readable against the background color
+
 ---
 
 ## Common Beginner Mistakes
@@ -310,6 +377,8 @@ Circulate during this time — this is the first moment students write HTML/CSS 
 - Forgetting the `<link>` tag, then wondering why CSS "isn't working"
 - Margin/padding confusion — refer back to the box model diagram
 - Missing `alt` attribute on `<img>` tags (mention accessibility briefly)
+- Putting CSS inside the HTML file by accident after creating `style.css`
+- Expecting the browser to refresh automatically — remind students to save the file, then reload the page
 
 ---
 
@@ -318,6 +387,12 @@ Circulate during this time — this is the first moment students write HTML/CSS 
 1. Finish the personal profile page if not completed in class
 2. Add at least one `<img>` tag and style it with CSS (width, border, or margin)
 3. Change your page's color scheme using hex codes instead of named colors
+
+### Exit Ticket
+
+Before leaving, students answer:
+
+> What is one difference between a class selector and an ID selector?
 
 ---
 

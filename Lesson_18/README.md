@@ -13,8 +13,24 @@ By the end of this session, students will be able to:
 - Explain what the DOM is and why it matters
 - Select HTML elements using `document.querySelector()`
 - Change page content and styles using JavaScript
-- Handle a click event with `onClick`
+- Handle a click event with `addEventListener`
 - Compare Python and JavaScript syntax side by side
+
+---
+
+## Big Idea
+
+HTML creates the page, CSS styles it, and JavaScript changes it while the user is using it.
+
+Students already know the hard part: variables, functions, conditions, loops, and debugging. JavaScript uses those same ideas with different syntax and runs inside the browser.
+
+### Today's Build
+
+Students will add interactivity to the profile page from Lesson 17 by building one of these:
+
+- A counter button
+- A background-color changer
+- A show/hide button
 
 ---
 
@@ -37,6 +53,8 @@ By the end of this session, students will be able to:
 
 JavaScript is the third layer from Lesson 17's house analogy — it's what makes a page *do* things. Unlike HTML/CSS, JavaScript is a real programming language, and students already know one: Python. Lean into that.
 
+Plain-English framing: JavaScript is the browser's programming language.
+
 ### Variables
 
 ```javascript
@@ -49,6 +67,12 @@ const name = "Sara";   // cannot be reassigned
 | `let`    | Value can change later          |
 | `const`  | Value is locked once set        |
 | `var`    | Old style — mention it exists, tell students to avoid it |
+
+Rule of thumb:
+
+- Use `const` first.
+- Use `let` when the value needs to change.
+- Avoid `var` in new code.
 
 ### Data Types (quick pass — mostly familiar)
 
@@ -98,6 +122,14 @@ Put this table on screen and let it do the teaching — students map new syntax 
 
 > Key framing line: "You already know how to think in code. Today you're learning a new *accent*, not a new *language of thought*."
 
+### Main Syntax Differences to Watch
+
+- JavaScript uses `{ }` to group code blocks.
+- JavaScript commonly ends statements with `;`.
+- JavaScript prints with `console.log()`, not `print()`.
+- JavaScript lists are called arrays.
+- JavaScript dictionaries are called objects.
+
 ---
 
 ## 3. What Is the DOM? (25 min)
@@ -136,6 +168,20 @@ const allItems = document.querySelectorAll("li");
 ```
 
 `querySelector` uses the exact same selector syntax as CSS from Lesson 17 — another deliberate connection to draw out loud.
+
+### Quick Check
+
+Given this HTML:
+
+```html
+<button id="saveBtn" class="primary">Save</button>
+```
+
+Ask students which selector they would use:
+
+- By tag: `button`
+- By class: `.primary`
+- By ID: `#saveBtn`
 
 ---
 
@@ -177,6 +223,8 @@ Or inline (simpler for first exposure, mention `addEventListener` is the more sc
 <button onclick="alert('Clicked!')">Click Me</button>
 ```
 
+For this course, prefer `addEventListener` in student projects. It keeps HTML and JavaScript separated, just like Lesson 17 separated HTML and CSS.
+
 ### Live Demo: Build a Counter
 
 Type this live, explaining each line:
@@ -199,6 +247,20 @@ button.addEventListener("click", function() {
 
 Walk through what happens on each click: JavaScript variable updates → DOM element's text is reassigned → browser re-renders. This is the "behavior" layer from Lesson 17 made concrete.
 
+### Where to Put the Script
+
+For beginner projects, place the `<script>` tag at the end of the `<body>`:
+
+```html
+<body>
+    <!-- page content first -->
+
+    <script src="script.js"></script>
+</body>
+```
+
+This helps ensure the HTML exists before JavaScript tries to select it.
+
 ---
 
 ## Hands-On Activity: Interactive Counter or Button (15 min)
@@ -213,6 +275,16 @@ Building on the profile page from Lesson 17, students add one interactive elemen
 
 Circulate and help debug — this is the first time students connect JS to HTML live, so expect `null` errors from mistyped selectors (a great moment to reinforce reading error messages from Lesson 03).
 
+### Success Checklist
+
+A complete first version should have:
+
+- A button visible on the page
+- JavaScript connected to the page
+- One `document.querySelector(...)`
+- One `addEventListener("click", ...)`
+- One visible change after the button is clicked
+
 ---
 
 ## Common Beginner Mistakes
@@ -222,6 +294,7 @@ Circulate and help debug — this is the first time students connect JS to HTML 
 - Selecting an element with the wrong selector (e.g., `.myButton` instead of `#myButton`)
 - Putting the `<script>` tag before the HTML it targets exists — the DOM isn't loaded yet, so `querySelector` returns `null`. Fix: place `<script>` at the end of `<body>`, or use an event listener for `DOMContentLoaded`
 - Confusing `=` (assignment) with `==`/`===` (comparison) — a mistake Python students often carry over correctly, but worth a one-line reminder
+- Seeing `Cannot read properties of null` and not knowing what it means. Translation: JavaScript could not find the element you asked for.
 
 ---
 
@@ -230,6 +303,14 @@ Circulate and help debug — this is the first time students connect JS to HTML 
 1. Add two more interactive elements to your profile page from Lesson 17
 2. Use `console.log()` at least twice to practice reading output in DevTools' Console tab
 3. In your own words (2–3 sentences): what is the DOM, and how is it different from the HTML file itself?
+
+### Exit Ticket
+
+Before leaving, students answer:
+
+> What are the three steps needed to make a button change something on the page?
+
+Expected answer: select the element, listen for a click, update the DOM.
 
 ---
 
