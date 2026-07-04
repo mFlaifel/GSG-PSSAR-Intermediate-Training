@@ -77,9 +77,7 @@ Key point: **the server usually does not need to know what kind of device is ask
 
 Ask: "When you watch a YouTube video, which machine is the client and which is the server?"
 
-Expected answer:
-- Your device/browser = client
-- YouTube's computers = server
+
 
 ---
 
@@ -154,7 +152,7 @@ These are the three core frontend technologies students will use in Lessons 17�
 
 A page with only HTML is a plain, unstyled house. CSS makes it look intentional. JavaScript makes it *do* things — respond to clicks, update without reloading, validate a form.
 
-### Check for Understanding
+### [Check for Understanding](https://coddy.tech/playground/html)
 
 Ask students to complete these sentences:
 
@@ -162,7 +160,6 @@ Ask students to complete these sentences:
 - CSS controls the page's ___.
 - JavaScript controls the page's ___.
 
-Expected answers: structure/content, appearance/layout, behavior/interactivity.
 
 ---
 
@@ -262,11 +259,7 @@ By the end of the activity, each student should be able to point to:
    - One HTML request and its status code
 2. In 2–3 sentences, explain in your own words what a "client" and a "server" are — no copying definitions, use your own analogy.
 
-### Exit Ticket
 
-Before leaving, students answer in one sentence:
-
-> What is one thing your browser does after it receives HTML from a server?
 
 ---
 
