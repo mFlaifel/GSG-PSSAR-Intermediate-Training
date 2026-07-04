@@ -81,7 +81,7 @@ Ask: "When you watch a YouTube video, which machine is the client and which is t
 
 ---
 
-## 2. What Happens When You Type a URL (30 min)
+## 2. [What Happens When You Type a URL](https://mflaifel.github.io/GSG-PSSAR-Intermediate-Training/Lesson_16/url-journey-slider.html) (30 min)
 
 Walk through this sequence on the board or in an ASCII diagram, one step at a time. Use a concrete example: `www.example.com`.
 
