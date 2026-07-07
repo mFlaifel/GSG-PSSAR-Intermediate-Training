@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anatomy of a Web Page — HTML &amp; CSS Reference</title>
+    <meta
+      name="description"
+      content="A labeled, live reference of the most important HTML tags and CSS properties."
+    />
+
+    <!-- Two fonts, two jobs: JetBrains Mono for tags/labels/code, Inter for reading text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- ============ NAV: the sidebar index ============ -->
+    <nav class="toc" aria-label="Table of contents">
+      <div class="toc-head">
+        <p class="toc-eyebrow">Reference Sheet</p>
+        <p class="toc-title">INDEX</p>
+      </div>
+      <ol class="toc-list">
+        <li><a href="#text">§01 Text &amp; Headings</a></li>
+        <li><a href="#lists">§02 Lists</a></li>
+        <li><a href="#links-media">§03 Links &amp; Media</a></li>
+        <li><a href="#tables">§04 Tables</a></li>
+        <li><a href="#forms">§05 Forms</a></li>
+        <li><a href="#semantic">§06 Semantic Layout</a></li>
+        <li><a href="#containers">§07 div &amp; span</a></li>
+        <li><a href="#css-concepts">§08 CSS Concepts</a></li>
+      </ol>
+      <div class="toc-legend">
+        <p class="legend-title">Legend</p>
+        <p><span class="legend-swatch swatch-amber"></span> Tag / attribute</p>
+        <p><span class="legend-swatch swatch-white"></span> Live render</p>
+        <p><span class="legend-swatch swatch-mint"></span> Source code</p>
+      </div>
+    </nav>
+
+    <main id="main">
+      <header class="masthead">
+        <p class="eyebrow">HTML &amp; CSS —</p>
+        <h1>Anatomy of a Web Page</h1>
+        <p class="lede">
+          The tags and properties you'll reach for in almost every project —
+          shown live, next to the code that made them, like parts labeled on a
+          blueprint.
+        </p>
+        <div class="title-block">
+          <div>
+            <span class="tb-label">Subject</span
+            ><span class="tb-value">HTML &amp; CSS</span>
+          </div>
+          <div>
+            <span class="tb-label">Type</span
+            ><span class="tb-value">Reference Sheet</span>
+          </div>
+          <div>
+            <span class="tb-label">Scale</span><span class="tb-value">1:1</span>
+          </div>
+          <div>
+            <span class="tb-label">Rev.</span
+            ><span class="tb-value">2026.07</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- ============ §01 TEXT & HEADINGS ============ -->
+      <section id="text" class="sheet">
+        <p class="sheet-num">§01</p>
+        <h2>Text &amp; Headings</h2>
+        <p class="sheet-desc">
+          The tags that carry meaning and hierarchy in your content — search
+          engines and screen readers both read this structure.
+        </p>
+
+        <div class="demo-grid">
+          <div class="demo">
+            <span class="tag-label">&lt;h1&gt;–&lt;h6&gt;</span>
+            <div class="demo-render">
+              <h1 class="mini">Heading 1</h1>
+              <h2 class="mini">Heading 2</h2>
+              <h3 class="mini">Heading 3</h3>
+              <h4 class="mini">Heading 4</h4>
+            </div>
+            <pre class="demo-code"><code>&lt;h1&gt;Heading 1&lt;/h1&gt;
+&lt;h2&gt;Heading 2&lt;/h2&gt;
+&lt;h3&gt;Heading 3&lt;/h3&gt;</code></pre>
+            <p class="demo-note">
+              Only one &lt;h1&gt; per page. Levels should nest in order — don't
+              skip from h2 to h4.
+            </p>
+          </div>
+
+          <div class="demo">
+            <span class="tag-label">&lt;p&gt;</span>
+            <div class="demo-render">
+              <p>
+                A paragraph is a block of running text — the default container
+                for everything you write.
+              </p>
+            </div>
+            <pre
+              class="demo-code"
+            ><code>&lt;p&gt;A paragraph of text.&lt;/p&gt;</code></pre>
+            <p class="demo-note">
+              The most common tag on the web. Browsers add space above and below
+              it automatically.
+            </p>
+          </div>
+
+          <div class="demo">
+            <span class="tag-label">&lt;strong&gt; &lt;em&gt;</span>
+            <div class="demo-render">
+              <p>
+                This step is <strong>required</strong>, but the order is
+                <em>up to you</em>.
+              </p>
+            </div>
+            <pre class="demo-code"><code>&lt;strong&gt;required&lt;/strong&gt;
+&lt;em&gt;up to you&lt;/em&gt;</code></pre>
+            <p class="demo-note">
+              strong = importance (bold). em = emphasis (italic). Not just
+              visual — screen readers announce both differently.
+            </p>
+          </div>
+
+          <div class="demo">
+            <span class="tag-label">&lt;blockquote&gt;</span>
+            <div class="demo-render">
+              <blockquote>Simplicity is the soul of efficiency.</blockquote>
+            </div>
+            <pre class="demo-code"><code>&lt;blockquote&gt;
+  Simplicity is the soul
+  of efficiency.
+&lt;/blockquote&gt;</code></pre>
+            <p class="demo-note">
+              For quoting an external source — pairs well with a &lt;cite&gt;.
+            </p>
+          </div>
+
+          <div class="demo">
+            <span class="tag-label">&lt;hr&gt;</span>
+            <div class="demo-render">
+              <p>Section one.</p>
+              <hr />
+              <p>Section two.</p>
+            </div>
+            <pre class="demo-code"><code>&lt;p&gt;Section one.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Section two.&lt;/p&gt;</code></pre>
+            <p class="demo-note">
+              Marks a thematic break — a topic change, not just a decorative
+              line.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ §02 LISTS ============ -->
+      <section id="lists" class="sheet">
+        <p class="sheet-num">§02</p>
+        <h2>Lists</h2>
+        <p class="sheet-desc">
+          Three ways to group related items — pick the one that matches the
+          meaning.
+        </p>
+
+        <div class="demo-grid">
+          <div class="demo">
+            <span class="tag-label">&lt;ul&gt;</span>
+            <div class="demo-render">
+              <ul>
+                <li>HTML — structure</li>
+                <li>CSS — style</li>
+                <li>JavaScript — behavior</li>
+              </ul>
+            </div>
+            <pre class="demo-code"><code>&lt;ul&gt;
+  &lt;li&gt;HTML&lt;/li&gt;
+  &lt;li&gt;CSS&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+            <p class="demo-note">
+              Unordered list — the sequence doesn't matter.
+            </p>
+          </div>
+
+          <div class="demo">
+            <span class="tag-label">&lt;ol&gt;</span>
+            <div class="demo-render">
+              <ol>
+                <li>Plan the page</li>
+                <li>Write the HTML</li>
+                <li>Style it with CSS</li>
+              </ol>
+            </div>
+            <pre class="demo-code"><code>&lt;ol&gt;
+  &lt;li&gt;Plan the page&lt;/li&gt;
+  &lt;li&gt;Write the HTML&lt;/li&gt;
+&lt;/ol&gt;</code></pre>
+            <p class="demo-note">
+              Ordered list — steps, rankings, anything where order carries
+              information.
+            </p>
+          </div>
+
+          <div class="demo">
+            <span class="tag-label">&lt;dl&gt;</span>
+            <div class="demo-render">
+              <dl>
+                <dt>HTML</dt>
+                <dd>Defines structure and content.</dd>
+                <dt>CSS</dt>
+                <dd>Defines presentation and layout.</dd>
+              </dl>
+            </div>
+            <pre class="demo-code"><code>&lt;dl&gt;
+  &lt;dt&gt;HTML&lt;/dt&gt;
+  &lt;dd&gt;Structure.&lt;/dd&gt;
+&lt;/dl&gt;</code></pre>
+            <p class="demo-note">
+              Description list — pairs a term (dt) with its definition (dd).
+              Great for glossaries and specs.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ §03 LINKS & MEDIA ============ -->
+      <section id="links-media" class="sheet">
+        <p class="sheet-num">§03</p>
+        <h2>Links &amp; Media</h2>
+        <p class="sheet-desc">
+          How pages connect to each other, and how images get labeled.
+        </p>
+
+        <div class="demo-grid">
+          <div class="demo">
+            <span class="tag-label">&lt;a&gt;</span>
+            <div class="demo-render">
+              <p>
+                <a
+                  href="https://developer.mozilla.org"
+                  target="_blank"
+                  rel="noopener"
+                  >Visit MDN Web Docs</a
+                >
+              </p>
+            </div>
+            <pre class="demo-code"><code>&lt;a href="https://mdn.io"
+   target="_blank"
+   rel="noopener"&gt;
+  Visit MDN Web Docs
+&lt;/a&gt;</code></pre>
+            <p class="demo-note">
+              href points where it goes. target="_blank" opens a new tab — pair
+              it with rel="noopener" for security.
+            </p>
+          </div>
+
+          <div class="demo">
+            <span class="tag-label">&lt;figure&gt;</span>
+            <div class="demo-render">
+              <figure>
+                <img
+                  src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='160'%3E%3Crect width='320' height='160' fill='%2312395e'/%3E%3Ctext x='160' y='84' font-family='monospace' font-size='14' fill='%23f4a736' text-anchor='middle'%3ESAMPLE IMAGE%3C/text%3E%3C/svg%3E"
+                  alt="Placeholder graphic, 320 by 160 pixels"
+                  width="320"
+                  height="160"
+                />
+                <figcaption>Fig. 1 — an image with a caption</figcaption>
+              </figure>
+            </div>
+            <pre class="demo-code"><code>&lt;figure&gt;
+  &lt;img src="photo.jpg"
+       alt="What it shows"&gt;
+  &lt;figcaption&gt;Fig. 1&lt;/figcaption&gt;
+&lt;/figure&gt;</code></pre>
+            <p class="demo-note">
+              alt is not optional — it's what screen readers announce, and what
+              shows if the image fails to load.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ §04 TABLES ============ -->
+      <section id="tables" class="sheet">
+        <p class="sheet-num">§04</p>
+        <h2>Tables</h2>
+        <p class="sheet-desc">
+          For genuinely tabular data — rows and columns of related values. Not
+          for page layout.
+        </p>
+
+        <div class="demo">
+          <span class="tag-label">&lt;table&gt;</span>
+          <div class="demo-render">
+            <table>
+              <caption>
+                Course Enrollment
+              </caption>
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Language</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Amina</td>
+                  <td>Python</td>
+                  <td>Active</td>
+                </tr>
+                <tr>
+                  <td>Lucas</td>
+                  <td>Flask</td>
+                  <td>Active</td>
+                </tr>
+                <tr>
+                  <td>Yara</td>
+                  <td>JavaScript</td>
+                  <td>Waitlist</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <pre class="demo-code"><code>&lt;table&gt;
+  &lt;caption&gt;Course Enrollment&lt;/caption&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th&gt;Student&lt;/th&gt;&lt;th&gt;Language&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;Amina&lt;/td&gt;&lt;td&gt;Python&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+          <p class="demo-note">
+            thead/tbody group rows semantically. th marks a header cell — use
+            scope="col" or scope="row" for accessibility.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ §05 FORMS ============ -->
+      <section id="forms" class="sheet">
+        <p class="sheet-num">§05</p>
+        <h2>Forms</h2>
+        <p class="sheet-desc">
+          How a page collects input. Every field needs a &lt;label&gt; — it's
+          not decoration, it's what makes the field usable.
+        </p>
+
+        <div class="demo">
+          <span class="tag-label">&lt;form&gt;</span>
+          <div class="demo-render">
+            <form class="form-demo" method="post">
+              <fieldset>
+                <legend>Contact</legend>
+
+                <label for="name"
+                  >Name
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Ada Lovelace"
+                  />
+                </label>
+
+                <label for="email"
+                  >Email
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="ada@example.com"
+                  />
+                </label>
+
+                <label for="msg"
+                  >Message
+                  <textarea
+                    id="msg"
+                    name="msg"
+                    rows="3"
+                    placeholder="Type here…"
+                  ></textarea>
+                </label>
+
+                <label for="topic"
+                  >Topic
+                  <select id="topic" name="topic">
+                    <option value="general">General</option>
+                    <option value="support">Support</option>
+                  </select>
+                </label>
+
+                <div class="radio-row">
+                  <span class="radio-row-label">Preferred contact</span>
+                  <label class="inline"
+                    ><input type="radio" name="contact" value="email" checked />
+                    Email</label
+                  >
+                  <label class="inline"
+                    ><input type="radio" name="contact" value="phone" />
+                    Phone</label
+                  >
+                </div>
+
+                <label class="inline"
+                  ><input type="checkbox" name="subscribe" /> Subscribe to
+                  updates</label
+                >
+
+                <button type="submit">Send</button>
+              </fieldset>
+            </form>
+          </div>
+          <pre class="demo-code"><code>&lt;form&gt;
+  &lt;label for="email"&gt;Email
+    &lt;input type="email" id="email"&gt;
+  &lt;/label&gt;
+  &lt;button type="submit"&gt;Send&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+          <p class="demo-note">
+            This demo form doesn't submit anywhere — the button is type="button"
+            on purpose. In a real form, use type="submit" with an action and
+            method.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ §06 SEMANTIC LAYOUT ============ -->
+      <section id="semantic" class="sheet">
+        <p class="sheet-num">§06</p>
+        <h2>Semantic Layout</h2>
+        <p class="sheet-desc">
+          Landmarks that describe the <em>role</em> of a region, not just its
+          box. This whole page is built from these.
+        </p>
+
+        <div class="demo">
+          <span class="tag-label"
+            >&lt;header&gt; &lt;nav&gt; &lt;main&gt; &lt;footer&gt;</span
+          >
+          <div class="demo-render">
+            <div class="landmark-mock">
+              <header class="lm">header</header>
+              <nav class="lm">nav</nav>
+              <div class="lm-body">
+                <section class="lm">
+                  section
+                  <article class="lm-inner">article</article>
+                </section>
+                <aside class="lm">aside</aside>
+              </div>
+              <footer class="lm">footer</footer>
+            </div>
+          </div>
+          <pre class="demo-code"><code>&lt;header&gt;…&lt;/header&gt;
+&lt;nav&gt;…&lt;/nav&gt;
+&lt;main&gt;
+  &lt;section&gt;
+    &lt;article&gt;…&lt;/article&gt;
+  &lt;/section&gt;
+  &lt;aside&gt;…&lt;/aside&gt;
+&lt;/main&gt;
+&lt;footer&gt;…&lt;/footer&gt;</code></pre>
+          <p class="demo-note">
+            main appears once per page (this page's real &lt;main&gt; wraps
+            everything below the sidebar). article is self-contained content;
+            section groups related content; aside is tangential.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ §07 GENERIC CONTAINERS ============ -->
+      <section id="containers" class="sheet">
+        <p class="sheet-num">§07</p>
+        <h2>div &amp; span</h2>
+        <p class="sheet-desc">
+          When nothing more meaningful fits — pure boxes for layout and styling
+          hooks.
+        </p>
+
+        <div class="demo-grid">
+          <div class="demo">
+            <span class="tag-label">&lt;div&gt;</span>
+            <div class="demo-render">
+              <div class="cs-box">
+                A block-level box with no meaning of its own — a hook for CSS.
+              </div>
+            </div>
+            <pre class="demo-code"><code>&lt;div class="card"&gt;
+  content
+&lt;/div&gt;</code></pre>
+            <p class="demo-note">
+              Reach for a semantic tag first (§06). Use div when none of them
+              fit.
+            </p>
+          </div>
+
+          <div class="demo">
+            <span class="tag-label">&lt;span&gt;</span>
+            <div class="demo-render">
+              <p>
+                This sentence has one
+                <span class="cs-bg">highlighted</span> word using a span.
+              </p>
+            </div>
+            <pre class="demo-code"><code>one &lt;span class="hl"&gt;
+  highlighted
+&lt;/span&gt; word</code></pre>
+            <p class="demo-note">
+              Same idea as div, but inline — it doesn't start a new line.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ §08 CSS CONCEPTS ============ -->
+      <section id="css-concepts" class="sheet">
+        <p class="sheet-num">§08</p>
+        <h2>CSS Concepts</h2>
+        <p class="sheet-desc">
+          The properties that turn plain HTML into a designed page. Full
+          commented examples live in <code>style.css</code>.
+        </p>
+
+        <div class="demo-grid">
+          <div class="demo">
+            <span class="tag-label">selectors</span>
+            <div class="demo-render">
+              <p class="sel-element">
+                Element selector → matches every &lt;p&gt;
+              </p>
+              <p class="sel-class">Class selector → matches .highlight</p>
+              <p class="sel-id">ID selector → matches #unique, once per page</p>
+            </div>
+            <pre class="demo-code"><code>p          { color: navy; }
+.highlight { background: yellow; }
+#unique    { font-weight: bold; }</code></pre>
+            <p class="demo-note">
+              Classes are reusable. IDs are unique. Prefer classes for styling.
+            </p>
+          </div>
+
+          <div class="demo">
+            <span class="tag-label">box model</span>
+            <div class="demo-render">
+              <div class="bm-margin">
+                margin
+                <div class="bm-border">
+                  border
+                  <div class="bm-padding">
+                    padding
+                    <div class="bm-content">content</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <pre class="demo-code"><code>.box {
+  margin: 20px;
+  border: 4px solid;
+  padding: 16px;
+}</code></pre>
+            <p class="demo-note">
+              Every element is a box, from the inside out: content → padding →
+              border → margin.
+            </p>
+          </div>
+
+          <div class="demo">
+            <span class="tag-label">color / font</span>
+            <div class="demo-render">
+              <p class="cs-font">font-family, font-weight, font-size</p>
+              <p class="cs-color">color: sets the text color</p>
+              <p><span class="cs-bg">background-color: sets the fill</span></p>
+            </div>
+            <pre class="demo-code"><code>.text {
+  color: #c0392b;
+  font-family: monospace;
+  font-weight: 700;
+}</code></pre>
+            <p class="demo-note">The most-used properties in any stylesheet.</p>
+          </div>
+
+          <div class="demo">
+            <span class="tag-label">display: flex</span>
+            <div class="demo-render">
+              <div class="flex-demo">
+                <div class="flex-item">1</div>
+                <div class="flex-item">2</div>
+                <div class="flex-item">3</div>
+              </div>
+            </div>
+            <pre class="demo-code"><code>.row {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}</code></pre>
+            <p class="demo-note">
+              One-dimensional layout — arranges items in a row or column. This
+              whole page uses flex for its layout.
+            </p>
+          </div>
+
+          <div class="demo">
+            <span class="tag-label">display: grid</span>
+            <div class="demo-render">
+              <div class="grid-demo">
+                <div class="grid-item">1</div>
+                <div class="grid-item">2</div>
+                <div class="grid-item">3</div>
+                <div class="grid-item">4</div>
+                <div class="grid-item">5</div>
+                <div class="grid-item">6</div>
+              </div>
+            </div>
+            <pre class="demo-code"><code>.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}</code></pre>
+            <p class="demo-note">
+              Two-dimensional layout — rows and columns at once. The demo-grids
+              on this page use it too.
+            </p>
+          </div>
+
+          <div class="demo">
+            <span class="tag-label">position</span>
+            <div class="demo-render">
+              <div class="position-demo">
+                <span class="position-badge">absolute</span>
+                <p>
+                  The parent is position: relative; the badge is position:
+                  absolute, placed relative to it.
+                </p>
+              </div>
+            </div>
+            <pre class="demo-code"><code>.parent { position: relative; }
+.badge  {
+  position: absolute;
+  top: 10px; right: 10px;
+}</code></pre>
+            <p class="demo-note">
+              absolute positions relative to the nearest positioned ancestor —
+              not the whole page.
+            </p>
+          </div>
+
+          <div class="demo">
+            <span class="tag-label">:hover / :focus-visible</span>
+            <div class="demo-render">
+              <button class="pseudo-btn">Hover or Tab to me</button>
+            </div>
+            <pre class="demo-code"><code>.btn:hover {
+  background: white;
+}
+.btn:focus-visible {
+  outline: 3px solid orange;
+}</code></pre>
+            <p class="demo-note">
+              Pseudo-classes style an element based on state — no JavaScript
+              required.
+            </p>
+          </div>
+
+          <div class="demo">
+            <span class="tag-label">transition</span>
+            <div class="demo-render">
+              <div class="transition-box" title="hover me"></div>
+            </div>
+            <pre class="demo-code"><code>.box {
+  transition: transform 0.35s ease;
+}
+.box:hover {
+  transform: rotate(45deg) scale(1.15);
+}</code></pre>
+            <p class="demo-note">
+              Animates a property change smoothly instead of snapping instantly.
+              Hover the square.
+            </p>
+          </div>
+
+          <div class="demo">
+            <span class="tag-label">@media</span>
+            <div class="demo-render">
+              <div class="media-demo-bar"></div>
+            </div>
+            <pre class="demo-code"><code>@media (max-width: 700px) {
+  .bar { background: coral; }
+}</code></pre>
+            <p class="demo-note">
+              Resize this browser window below 700px — the bar above reacts on
+              its own. This is how the sidebar on this page collapses on mobile,
+              too.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <footer class="colophon">
+        <p>
+          Built as a teaching reference — view source, fork it, break it, learn
+          from it.
+        </p>
+      </footer>
+    </main>
+  </body>
+</html>

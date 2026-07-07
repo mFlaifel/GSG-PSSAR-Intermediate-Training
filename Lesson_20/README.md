@@ -38,16 +38,16 @@ Each student or pair will create a mini full-stack project with:
 
 ## Timed Breakdown
 
-| Time      | Segment                                     | Format                |
-| --------- | ---------------------------------------------- | ------------------------ |
-| 0:00–0:10 | Recap the full course arc, frame the finale     | Discussion                |
-| 0:10–0:25 | Capstone project brief & requirements            | Lecture + live demo        |
-| 0:25–0:45 | Guided build: connecting frontend to Flask       | Live coding, students follow |
-| 0:45–1:15 | Structured work time                             | Independent/paired work     |
-| 1:15–1:25 | **Break**                                       | —                          |
-| 1:25–1:45 | Continued work time + roaming support             | Independent/paired work      |
-| 1:45–2:00 | Mini-presentations / share-outs                  | Student-led                 |
-| If time allows | Career paths & next steps                 | Discussion                  |
+| Time           | Segment                                     | Format                       |
+| -------------- | ------------------------------------------- | ---------------------------- |
+| 0:00–0:10      | Recap the full course arc, frame the finale | Discussion                   |
+| 0:10–0:25      | Capstone project brief & requirements       | Lecture + live demo          |
+| 0:25–0:45      | Guided build: connecting frontend to Flask  | Live coding, students follow |
+| 0:45–1:15      | Structured work time                        | Independent/paired work      |
+| 1:15–1:25      | **Break**                                   | —                            |
+| 1:25–1:45      | Continued work time + roaming support       | Independent/paired work      |
+| 1:45–2:00      | Mini-presentations / share-outs             | Student-led                  |
+| If time allows | Career paths & next steps                   | Discussion                   |
 
 > **Facilitator note**: this session runs tight. If class size is large, consider extending presentations into a follow-up session, or capping each share-out to 60–90 seconds so everyone gets a turn.
 
@@ -81,14 +81,14 @@ Students build a small application with:
 
 **Suggested project options** (offer choice — ownership drives engagement on a capstone):
 
-| Project Idea            | Backend Logic                          | Frontend Display                |
-| -------------------------- | ------------------------------------------ | ---------------------------------- |
-| Quote/fact generator       | Random pick from a Python list              | Button that fetches a new quote    |
-| Simple to-do list           | Store/return a list of tasks                | Add/display tasks on the page      |
-| Grade calculator            | Take inputs, calculate average/letter grade | Form that submits and shows result |
-| Mini quiz app               | Store questions, check answers              | Show question, check click, show result |
+| Project Idea         | Backend Logic                               | Frontend Display                        |
+| -------------------- | ------------------------------------------- | --------------------------------------- |
+| Quote/fact generator | Random pick from a Python list              | Button that fetches a new quote         |
+| Simple to-do list    | Store/return a list of tasks                | Add/display tasks on the page           |
+| Grade calculator     | Take inputs, calculate average/letter grade | Form that submits and shows result      |
+| Mini quiz app        | Store questions, check answers              | Show question, check click, show result |
 
-Keep scope deliberately small — the goal is *connecting the full pipeline end-to-end*, not building something elaborate.
+Keep scope deliberately small — the goal is _connecting the full pipeline end-to-end_, not building something elaborate.
 
 ### Minimum Project Requirements
 
@@ -111,12 +111,12 @@ project/
 
 ### Good Scope vs. Too Much Scope
 
-| Good for today | Too much for today |
-| -------------- | ------------------ |
-| One button, one API route, one result | Login system |
-| A small list stored in Python | Full database setup |
-| Simple styling | Complex responsive design |
-| One calculation | Many pages and features |
+| Good for today                        | Too much for today        |
+| ------------------------------------- | ------------------------- |
+| One button, one API route, one result | Login system              |
+| A small list stored in Python         | Full database setup       |
+| Simple styling                        | Complex responsive design |
+| One calculation                       | Many pages and features   |
 
 ---
 
@@ -156,38 +156,38 @@ if __name__ == "__main__":
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Quote Generator</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Random Quote Generator</h1>
     <p id="quoteText">Click the button for a quote.</p>
     <button id="quoteBtn">New Quote</button>
 
     <script>
-        const button = document.querySelector("#quoteBtn");
-        const quoteText = document.querySelector("#quoteText");
+      const button = document.querySelector("#quoteBtn");
+      const quoteText = document.querySelector("#quoteText");
 
-        button.addEventListener("click", function() {
-            fetch("/api/quote")
-                .then(response => response.json())
-                .then(data => {
-                    quoteText.textContent = data.quote;
-                });
-        });
+      button.addEventListener("click", function () {
+        fetch("/api/quote")
+          .then((response) => response.json())
+          .then((data) => {
+            quoteText.textContent = data.quote;
+          });
+      });
     </script>
-</body>
+  </body>
 </html>
 ```
 
 ### Walking Through `fetch()`
 
-| Line                                      | What it does                                   |
-| -------------------------------------------- | ------------------------------------------------- |
-| `fetch("/api/quote")`                        | Sends a GET request to the Flask route — this is JavaScript's version of Lesson 19's `requests.get()` |
-| `.then(response => response.json())`          | Converts the raw response into usable JSON          |
-| `.then(data => { ... })`                       | Runs once the data is ready — updates the DOM         |
+| Line                                 | What it does                                                                                          |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| `fetch("/api/quote")`                | Sends a GET request to the Flask route — this is JavaScript's version of Lesson 19's `requests.get()` |
+| `.then(response => response.json())` | Converts the raw response into usable JSON                                                            |
+| `.then(data => { ... })`             | Runs once the data is ready — updates the DOM                                                         |
 
 > Name the symmetry explicitly: **Python's `requests` library (Lesson 19) and JavaScript's `fetch()` do the same job on two different sides of the client-server line from Lesson 16.** This is the full circle moment of the course.
 
@@ -214,9 +214,10 @@ This is the whole course working together.
 Let students choose to work solo or in pairs. Circulate constantly — this session lives or dies on hands-on support, not lecture.
 
 **Suggested checkpoints to announce partway through:**
+
 - 15 min in: "You should have your Flask route returning JSON in the browser directly."
 - 30 min in: "You should have your HTML page loading and your button wired up, even if it's not fetching data yet."
-- 40 min in: "Aim to have *something* fetching and displaying, even if it's not fully polished — a working simple version beats an unfinished ambitious one."
+- 40 min in: "Aim to have _something_ fetching and displaying, even if it's not fully polished — a working simple version beats an unfinished ambitious one."
 
 This staged pacing mirrors the debugging methodology from Lesson 03 — build the smallest working piece first, then extend.
 
@@ -262,12 +263,12 @@ Students can use this simple script:
 
 Briefly map the paths that build on what was just covered, without diving deep into any one:
 
-| Path                   | What it builds on from this course           |
-| ------------------------ | ----------------------------------------------- |
-| **Web Development**      | Phases 4–5 — HTML/CSS/JS, Flask, APIs             |
-| **Data / Data Analysis** | Phase 3 — files, `pandas`, structured data        |
-| **AI / Machine Learning**| Lesson 04's AI tools + Python foundations (Phases 2–3) |
-| **Systems / DevOps**     | Lesson 16's client-server model, servers, networks |
+| Path                      | What it builds on from this course                     |
+| ------------------------- | ------------------------------------------------------ |
+| **Web Development**       | Phases 4–5 — HTML/CSS/JS, Flask, APIs                  |
+| **Data / Data Analysis**  | Phase 3 — files, `pandas`, structured data             |
+| **AI / Machine Learning** | Lesson 04's AI tools + Python foundations (Phases 2–3) |
+| **Systems / DevOps**      | Lesson 16's client-server model, servers, networks     |
 
 ### Resources for Continued Learning
 
@@ -286,7 +287,7 @@ Briefly map the paths that build on what was just covered, without diving deep i
 
 ### Closing Framing
 
-Bring the course back to its opening line from Lesson 01 (or Mohammed's preferred framing): the course started with *how to think*, not *what to type*. That mindset — decomposition, debugging, reading errors, breaking problems down — is the actual transferable skill; every specific tool covered (Flask, this version of JavaScript, this specific syntax) will change over a career, but the thinking underneath it won't.
+Bring the course back to its opening line from Lesson 01 (or Mohammed's preferred framing): the course started with _how to think_, not _what to type_. That mindset — decomposition, debugging, reading errors, breaking problems down — is the actual transferable skill; every specific tool covered (Flask, this version of JavaScript, this specific syntax) will change over a career, but the thinking underneath it won't.
 
 ---
 

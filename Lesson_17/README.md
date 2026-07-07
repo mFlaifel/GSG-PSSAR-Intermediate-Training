@@ -231,11 +231,26 @@ Given this HTML:
 <p class="warning" id="main-warning">Be careful.</p>
 ```
 
-Ask:
+<details>
+<summary><strong>Question:</strong> Which selector targets every paragraph?</summary>
 
-- Which selector targets every paragraph? `p`
-- Which selector targets the reusable class? `.warning`
-- Which selector targets the unique ID? `#main-warning`
+`p`
+
+</details>
+
+<details>
+<summary><strong>Question:</strong> Which selector targets the reusable class?</summary>
+
+`.warning`
+
+</details>
+
+<details>
+<summary><strong>Question:</strong> Which selector targets the unique ID?</summary>
+
+`#main-warning`
+
+</details>
 
 ### The Box Model
 
@@ -275,13 +290,19 @@ This diagram is worth slowing down for because many beginner layout problems com
 
 ### Box Model Check
 
-Ask: "If I want more space between the text and its border, should I use `padding` or `margin`?"
+<details>
+<summary><strong>Question:</strong> If I want more space between the text and its border, should I use `padding` or `margin`?</summary>
 
 Expected answer: `padding`.
 
-Ask: "If I want more space between this box and the next box, should I use `padding` or `margin`?"
+</details>
+
+<details>
+<summary><strong>Question:</strong> If I want more space between this box and the next box, should I use `padding` or `margin`?</summary>
 
 Expected answer: `margin`.
+
+</details>
 
 ---
 
@@ -392,7 +413,13 @@ A complete first version should have:
 
 Before leaving, students answer:
 
-> What is one difference between a class selector and an ID selector?
+<details>
+<summary><strong>Question:</strong> What is one difference between a class selector and an ID selector?</summary>
+
+- A class selector targets multiple elements and uses a dot (`.`) prefix
+- An ID selector targets a single unique element and uses a hash (`#`) prefix
+
+</details>
 
 ---
 
