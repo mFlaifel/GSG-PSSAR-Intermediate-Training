@@ -422,6 +422,11 @@ Before leaving, students answer:
 </details>
 
 ---
+## Further Exploration
+
+- [**HTML elements reference**](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements) 
+- [**W3 school html**](https://www.w3schools.com/html/default.asp)
+- [**Free code camp**](https://www.freecodecamp.org/)
 
 ## Looking Ahead
 
