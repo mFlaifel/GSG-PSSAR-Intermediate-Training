@@ -1,87 +1,138 @@
-# Lesson 18 — JavaScript Basics & DOM
+# Lesson 18 - JavaScript for Front-End Web Development
 
-**Phase 4 — Frontend** | **Duration: 2 Hours** | **Session 18 of 20**
+**Phase 4 - Frontend** | **Duration: 2 Hours** | **Session 18 of 20**
 
 ---
 
-## Session Objectives
+## From Last Lecture to This Lecture
 
-By the end of this session, students will be able to:
+In Lesson 17, you built a page with **HTML** and **CSS**:
 
-- Declare variables in JavaScript using `let` and `const`
-- Write basic JavaScript functions
-- Explain what the DOM is and why it matters
+- **HTML** creates the page structure.
+- **CSS** controls how the page looks.
+
+In this lesson, we add the third front-end layer:
+
+- **JavaScript** controls how the page behaves.
+
+Think of a web page like this:
+
+```text
+HTML        = content and structure
+CSS         = visual style
+JavaScript  = interaction and behavior
+```
+
+Without JavaScript, a page can show information. With JavaScript, a page can respond to the user.
+
+---
+
+## Learning Objectives
+
+By the end of this lesson, you should be able to:
+
+- Explain what JavaScript does in the browser
+- Connect a JavaScript file to an HTML page
+- Use `console.log()` to test code
+- Create variables with `let` and `const`
+- Write a basic JavaScript function
 - Select HTML elements using `document.querySelector()`
-- Change page content and styles using JavaScript
-- Handle a click event with `addEventListener`
-- Compare Python and JavaScript syntax side by side
+- Change text, styles, or classes from JavaScript
+- Use `addEventListener()` to respond to a button click
+- Understand the DOM at a beginner level
 
 ---
 
-## Big Idea
+## 1. What Is JavaScript?
 
-HTML creates the page, CSS styles it, and JavaScript changes it while the user is using it.
+JavaScript is a programming language that runs inside the browser.
 
-Students already know the hard part: variables, functions, conditions, loops, and debugging. JavaScript uses those same ideas with different syntax and runs inside the browser.
+You already know many programming ideas from Python:
 
-### Today's Build
+- variables
+- strings and numbers
+- functions
+- conditions
+- loops
+- debugging
 
-Students will add interactivity to the profile page from Lesson 17 by building one of these:
+JavaScript uses the same ideas, but the syntax is different.
 
-- A counter button
-- A background-color changer
-- A show/hide button
+Example:
 
----
+```javascript
+const name = "Sara";
+let age = 25;
 
-## Timed Breakdown
+console.log(name);
+console.log(age);
+```
 
-| Time      | Segment                                | Format               |
-| --------- | ----------------------------------------- | ----------------------- |
-| 0:00–0:10 | Recap Lesson 17, frame today               | Discussion              |
-| 0:10–0:30 | JavaScript basics: variables & functions   | Lecture + live coding   |
-| 0:30–0:40 | Python vs. JavaScript comparison           | Lecture + discussion    |
-| 0:40–1:05 | What is the DOM? Selecting elements        | Lecture + diagram + live coding |
-| 1:05–1:15 | **Break**                                 | —                       |
-| 1:15–1:40 | Changing content & handling click events   | Live coding              |
-| 1:40–1:55 | Hands-on: interactive counter/button        | Guided practice           |
-| 1:55–2:00 | Wrap-up, homework                          | Discussion               |
+`console.log()` is like Python's `print()`. It prints information in the browser console.
 
 ---
 
-## 1. JavaScript Basics (20 min)
+## 2. Connecting JavaScript to HTML
 
-JavaScript is the third layer from Lesson 17's house analogy — it's what makes a page *do* things. Unlike HTML/CSS, JavaScript is a real programming language, and students already know one: Python. Lean into that.
+Create three files in the same folder:
 
-Plain-English framing: JavaScript is the browser's programming language.
+```text
+index.html
+style.css
+script.js
+```
+
+In your HTML file, connect CSS inside the `<head>` and JavaScript at the end of the `<body>`.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>My Interactive Page</h1>
+    <p id="message">Click the button to change this text.</p>
+    <button id="changeBtn">Click Me</button>
+
+    <script src="script.js"></script>
+</body>
+</html>
+```
+
+Place the `<script>` tag near the end of the `<body>` so the HTML elements exist before JavaScript tries to find them.
+
+---
+
+## 3. JavaScript Basics
 
 ### Variables
 
+Use `const` when the value should not be reassigned.
+
 ```javascript
-let age = 25;          // can be reassigned
-const name = "Sara";   // cannot be reassigned
+const studentName = "Sara";
 ```
 
-| Keyword | Behavior                     |
-| -------- | ------------------------------- |
-| `let`    | Value can change later          |
-| `const`  | Value is locked once set        |
-| `var`    | Old style — mention it exists, tell students to avoid it |
-
-Rule of thumb:
-
-- Use `const` first.
-- Use `let` when the value needs to change.
-- Avoid `var` in new code.
-
-### Data Types (quick pass — mostly familiar)
+Use `let` when the value needs to change.
 
 ```javascript
-let age = 25;              // number
-let name = "Sara";          // string
-let isStudent = true;       // boolean
-let skills = ["HTML", "CSS", "JS"];  // array
-let person = { name: "Sara", age: 25 };  // object
+let score = 0;
+score = score + 1;
+```
+
+Avoid `var` in new JavaScript code.
+
+### Data Types
+
+```javascript
+const name = "Sara";                  // string
+const age = 25;                       // number
+const isStudent = true;               // boolean
+const skills = ["HTML", "CSS", "JS"]; // array
+const profile = { name: "Sara", age: 25 }; // object
 ```
 
 ### Functions
@@ -94,226 +145,348 @@ function greet(name) {
 console.log(greet("Sara"));
 ```
 
-Modern shorthand (mention, don't over-teach):
+---
+
+## 4. Python vs JavaScript
+
+| Concept | Python | JavaScript |
+| --- | --- | --- |
+| Print output | `print("Hi")` | `console.log("Hi")` |
+| Variable | `age = 25` | `let age = 25;` |
+| Constant-style variable | usually naming convention | `const age = 25;` |
+| Function | `def greet(name):` | `function greet(name) { }` |
+| If statement | `if age > 18:` | `if (age > 18) { }` |
+| List / Array | `skills = ["HTML", "CSS"]` | `const skills = ["HTML", "CSS"];` |
+| Dictionary / Object | `{"name": "Sara"}` | `{ name: "Sara" }` |
+| Comment | `# comment` | `// comment` |
+
+The biggest visual difference is that JavaScript uses curly braces `{ }` to group code.
 
 ```javascript
-const greet = (name) => {
-    return "Hello, " + name + "!";
-};
+if (age >= 18) {
+    console.log("Adult");
+}
 ```
 
 ---
 
-## 2. Python vs. JavaScript — Side by Side (10 min)
+## 5. The DOM
 
-Put this table on screen and let it do the teaching — students map new syntax onto concepts they already own.
+The **DOM** stands for **Document Object Model**.
 
-| Concept          | Python                          | JavaScript                        |
-| ----------------- | --------------------------------- | ------------------------------------ |
-| Print to console  | `print("Hi")`                     | `console.log("Hi")`                  |
-| Variable           | `age = 25`                        | `let age = 25;`                      |
-| Function           | `def greet(name):`                | `function greet(name) {`             |
-| If statement       | `if age > 18:`                    | `if (age > 18) {`                    |
-| For loop           | `for i in range(5):`              | `for (let i = 0; i < 5; i++) {`      |
-| List/Array         | `skills = ["a", "b"]`             | `let skills = ["a", "b"];`           |
-| Dict/Object        | `person = {"name": "Sara"}`       | `let person = {name: "Sara"};`       |
-| Line endings       | Newline / indentation matters      | Semicolons; curly braces `{ }`       |
-| Comments           | `# comment`                        | `// comment`                          |
+The DOM is the browser's live version of your HTML page. JavaScript can use the DOM to read and change the page.
 
-> Key framing line: "You already know how to think in code. Today you're learning a new *accent*, not a new *language of thought*."
-
-### Main Syntax Differences to Watch
-
-- JavaScript uses `{ }` to group code blocks.
-- JavaScript commonly ends statements with `;`.
-- JavaScript prints with `console.log()`, not `print()`.
-- JavaScript lists are called arrays.
-- JavaScript dictionaries are called objects.
-
----
-
-## 3. What Is the DOM? (25 min)
-
-The **DOM (Document Object Model)** is how JavaScript "sees" and interacts with an HTML page — as a tree of objects it can read and change.
-
-```
-              document
-                 │
-              <html>
-                 │
-        ┌────────┴────────┐
-      <head>            <body>
-                            │
-                 ┌──────────┼──────────┐
-              <h1>         <p>       <button>
-              "Hello"    "Text"     "Click me"
-```
-
-This is the *exact same tree* students saw in the DevTools Elements panel back in Lesson 16 — JavaScript is simply a way to reach into that tree programmatically and change it.
-
-### Selecting Elements
-
-```javascript
-// Select the first matching element
-const heading = document.querySelector("h1");
-
-// Select by ID
-const box = document.querySelector("#main-box");
-
-// Select by class
-const item = document.querySelector(".highlight");
-
-// Select ALL matching elements (returns a list)
-const allItems = document.querySelectorAll("li");
-```
-
-`querySelector` uses the exact same selector syntax as CSS from Lesson 17 — another deliberate connection to draw out loud.
-
-### Quick Check
-
-Given this HTML:
+HTML file:
 
 ```html
-<button id="saveBtn" class="primary">Save</button>
+<body>
+    <h1>Hello</h1>
+    <p>Welcome to my page.</p>
+    <button>Click Me</button>
+</body>
 ```
 
-Ask students which selector they would use:
+DOM tree:
 
-- By tag: `button`
-- By class: `.primary`
-- By ID: `#saveBtn`
+```text
+document
++-- html
+    +-- body
+        +-- h1
+        +-- p
+        +-- button
+```
+
+Important idea:
+
+The HTML file is the original code. The DOM is the page as the browser currently understands it.
+
+JavaScript changes the DOM, and the browser updates what the user sees.
 
 ---
 
-## 4. Changing Content & Handling Events (25 min)
+## 6. Selecting HTML Elements
 
-### Reading and Changing Content
+To change something on the page, JavaScript must select it first.
 
 ```javascript
 const heading = document.querySelector("h1");
-
-console.log(heading.textContent);   // read current text
-heading.textContent = "New Title";  // change it
+const message = document.querySelector("#message");
+const card = document.querySelector(".card");
 ```
 
-### Changing Styles
+`querySelector()` uses the same selector syntax you learned in CSS:
 
-```javascript
-heading.style.color = "blue";
-heading.style.fontSize = "40px";
-```
+| Selector | Meaning | Example |
+| --- | --- | --- |
+| `h1` | Select by tag | `document.querySelector("h1")` |
+| `.card` | Select by class | `document.querySelector(".card")` |
+| `#message` | Select by ID | `document.querySelector("#message")` |
 
-### Handling Clicks
+Practice:
 
 ```html
-<button id="myButton">Click Me</button>
+<p id="intro" class="highlight">Welcome!</p>
 ```
 
 ```javascript
-const button = document.querySelector("#myButton");
+document.querySelector("p");          // selects by tag
+document.querySelector(".highlight"); // selects by class
+document.querySelector("#intro");     // selects by ID
+```
+
+---
+
+## 7. Changing Page Content
+
+After selecting an element, you can change it.
+
+```javascript
+const message = document.querySelector("#message");
+
+message.textContent = "The text has changed!";
+```
+
+You can also change styles:
+
+```javascript
+message.style.color = "blue";
+message.style.fontSize = "24px";
+```
+
+But for bigger style changes, it is usually better to use CSS classes.
+
+```css
+.important {
+    color: white;
+    background-color: darkblue;
+    padding: 10px;
+}
+```
+
+```javascript
+message.classList.add("important");
+```
+
+Important concept:
+
+JavaScript should control **when** something changes. CSS should usually control **how** it looks.
+
+---
+
+## 8. Events
+
+An **event** is something that happens in the browser.
+
+Examples:
+
+- the user clicks a button
+- the user types in an input
+- the page finishes loading
+- the user moves the mouse
+
+JavaScript can listen for events and run code when they happen.
+
+```javascript
+const button = document.querySelector("#changeBtn");
 
 button.addEventListener("click", function() {
-    alert("Button was clicked!");
+    console.log("Button clicked");
 });
 ```
 
-Or inline (simpler for first exposure, mention `addEventListener` is the more scalable long-term pattern):
+This means:
 
-```html
-<button onclick="alert('Clicked!')">Click Me</button>
+1. Find the button.
+2. Listen for a click.
+3. Run the function when the click happens.
+
+---
+
+## 9. Full Example: Change Text on Click
+
+Use the HTML from section 2.
+
+In `script.js`:
+
+```javascript
+const message = document.querySelector("#message");
+const button = document.querySelector("#changeBtn");
+
+button.addEventListener("click", function() {
+    message.textContent = "JavaScript changed the page!";
+});
 ```
 
-For this course, prefer `addEventListener` in student projects. It keeps HTML and JavaScript separated, just like Lesson 17 separated HTML and CSS.
+What happens:
 
-### Live Demo: Build a Counter
+1. JavaScript selects the paragraph.
+2. JavaScript selects the button.
+3. The browser waits for a click.
+4. When the button is clicked, JavaScript changes the paragraph text.
 
-Type this live, explaining each line:
+---
+
+## 10. Full Example: Counter Button
+
+HTML:
 
 ```html
-<p id="count">0</p>
-<button id="incrementBtn">+1</button>
+<p>Count: <span id="count">0</span></p>
+<button id="increaseBtn">Increase</button>
 ```
+
+JavaScript:
 
 ```javascript
 let count = 0;
-const countDisplay = document.querySelector("#count");
-const button = document.querySelector("#incrementBtn");
 
-button.addEventListener("click", function() {
+const countDisplay = document.querySelector("#count");
+const increaseBtn = document.querySelector("#increaseBtn");
+
+increaseBtn.addEventListener("click", function() {
     count = count + 1;
     countDisplay.textContent = count;
 });
 ```
 
-Walk through what happens on each click: JavaScript variable updates → DOM element's text is reassigned → browser re-renders. This is the "behavior" layer from Lesson 17 made concrete.
+Important concept:
 
-### Where to Put the Script
+`count` is JavaScript state. It remembers information while the page is running.
 
-For beginner projects, place the `<script>` tag at the end of the `<body>`:
+Every click changes the state, then updates the DOM.
 
-```html
-<body>
-    <!-- page content first -->
-
-    <script src="script.js"></script>
-</body>
+```text
+click -> update variable -> update DOM -> user sees new page
 ```
 
-This helps ensure the HTML exists before JavaScript tries to select it.
-
 ---
 
-## Hands-On Activity: Interactive Counter or Button (15 min)
+## 11. Mini Project: Make Your Profile Page Interactive
 
-Building on the profile page from Lesson 17, students add one interactive element. Options (offer as choices, not requirements):
+Use your profile page from Lesson 17.
 
-1. A counter button (like the live demo)
-2. A button that changes the page's background color on click
-3. A button that shows/hides a paragraph of text
+Add at least one interactive feature:
 
-**Minimum requirement**: one `<button>`, one `addEventListener`, one DOM change (text or style).
+- A button that changes your bio text
+- A button that changes the background color
+- A button that shows or hides your skills list
+- A counter that tracks how many times someone clicked a button
 
-Circulate and help debug — this is the first time students connect JS to HTML live, so expect `null` errors from mistyped selectors (a great moment to reinforce reading error messages from Lesson 03).
+Minimum requirements:
 
-### Success Checklist
-
-A complete first version should have:
-
-- A button visible on the page
-- JavaScript connected to the page
-- One `document.querySelector(...)`
+- One `<button>`
+- One JavaScript file connected with `<script src="script.js"></script>`
+- One `document.querySelector()`
 - One `addEventListener("click", ...)`
-- One visible change after the button is clicked
+- One visible change on the page
 
 ---
 
-## Common Beginner Mistakes
+## 12. Example Mini Project
 
-- Forgetting `let`/`const` when declaring a variable
-- Missing semicolons (JS is more forgiving than students expect, but flag it as good practice)
-- Selecting an element with the wrong selector (e.g., `.myButton` instead of `#myButton`)
-- Putting the `<script>` tag before the HTML it targets exists — the DOM isn't loaded yet, so `querySelector` returns `null`. Fix: place `<script>` at the end of `<body>`, or use an event listener for `DOMContentLoaded`
-- Confusing `=` (assignment) with `==`/`===` (comparison) — a mistake Python students often carry over correctly, but worth a one-line reminder
-- Seeing `Cannot read properties of null` and not knowing what it means. Translation: JavaScript could not find the element you asked for.
+HTML:
+
+```html
+<section class="profile-card">
+    <h1 id="name">Sara Ahmed</h1>
+    <p id="bio">I am learning front-end web development.</p>
+    <button id="bioBtn">Update Bio</button>
+</section>
+```
+
+CSS:
+
+```css
+.profile-card {
+    border: 1px solid #cccccc;
+    padding: 20px;
+    max-width: 400px;
+}
+
+.active {
+    background-color: #e6f2ff;
+}
+```
+
+JavaScript:
+
+```javascript
+const bio = document.querySelector("#bio");
+const button = document.querySelector("#bioBtn");
+const card = document.querySelector(".profile-card");
+
+button.addEventListener("click", function() {
+    bio.textContent = "I can now make a web page respond to clicks.";
+    card.classList.add("active");
+});
+```
+
+---
+
+## 13. Debugging Checklist
+
+If your JavaScript does not work, check these first:
+
+- Is `script.js` saved?
+- Is the script connected correctly in HTML?
+- Is the `<script>` tag at the end of the `<body>`?
+- Does your selector match the HTML exactly?
+- Did you use `#` for an ID and `.` for a class?
+- Did you open the browser console and read the error?
+
+Common error:
+
+```text
+Cannot read properties of null
+```
+
+This usually means JavaScript could not find the element you tried to select.
+
+Example problem:
+
+```html
+<button id="saveBtn">Save</button>
+```
+
+```javascript
+const button = document.querySelector("#saveButton");
+```
+
+The JavaScript asks for `#saveButton`, but the HTML ID is `saveBtn`. The names must match.
+
+---
+
+## Key Takeaways
+
+- JavaScript is the behavior layer of the front end.
+- The DOM is the browser's live version of the HTML page.
+- Use `document.querySelector()` to select elements.
+- Use `textContent`, `style`, or `classList` to change elements.
+- Use `addEventListener()` to respond to user actions.
+- Use `console.log()` and the browser console to debug.
+- A common front-end pattern is:
+
+```text
+select element -> listen for event -> update state -> update DOM
+```
 
 ---
 
 ## Homework
 
-1. Add two more interactive elements to your profile page from Lesson 17
-2. Use `console.log()` at least twice to practice reading output in DevTools' Console tab
-3. In your own words (2–3 sentences): what is the DOM, and how is it different from the HTML file itself?
+Continue your Lesson 17 profile page and add two JavaScript interactions.
 
-### Exit Ticket
+Your page should include:
 
-Before leaving, students answer:
+- `index.html`
+- `style.css`
+- `script.js`
+- At least two buttons
+- At least two event listeners
+- At least one text change
+- At least one style or class change
 
-> What are the three steps needed to make a button change something on the page?
+Write a short answer:
 
-Expected answer: select the element, listen for a click, update the DOM.
-
----
-
-## Looking Ahead
-
-Lesson 19 flips the picture from Lesson 16's diagram — instead of being the client requesting data, students will build the **server** side: a Flask API that responds to requests.
+> What is the DOM, and why does JavaScript need it?
