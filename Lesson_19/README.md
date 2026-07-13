@@ -34,17 +34,17 @@ Students will create:
 
 ## Timed Breakdown
 
-| Time      | Segment                                    | Format               |
-| --------- | --------------------------------------------- | ----------------------- |
-| 0:00–0:10 | Recap Lessons 16–18, frame Phase 5             | Discussion              |
-| 0:10–0:25 | What does a server do? (revisit + deepen)      | Lecture + diagram       |
-| 0:25–0:40 | REST APIs, JSON, HTTP verbs                    | Lecture + live examples |
-| 0:40–1:00 | Flask hello-world application                  | Live coding, students follow |
-| 1:00–1:10 | **Break**                                     | —                        |
-| 1:10–1:30 | Building a JSON API route in Flask              | Live coding              |
-| 1:30–1:45 | Reading API data with Python `requests`         | Live coding              |
-| 1:45–1:55 | Database overview (conceptual)                  | Lecture + diagram         |
-| 1:55–2:00 | Wrap-up, homework                               | Discussion                |
+| Time      | Segment                                   | Format                       |
+| --------- | ----------------------------------------- | ---------------------------- |
+| 0:00–0:10 | Recap Lessons 16–18, frame Phase 5        | Discussion                   |
+| 0:10–0:25 | What does a server do? (revisit + deepen) | Lecture + diagram            |
+| 0:25–0:40 | REST APIs, JSON, HTTP verbs               | Lecture + live examples      |
+| 0:40–1:00 | Flask hello-world application             | Live coding, students follow |
+| 1:00–1:10 | **Break**                                 | —                            |
+| 1:10–1:30 | Building a JSON API route in Flask        | Live coding                  |
+| 1:30–1:45 | Reading API data with Python `requests`   | Live coding                  |
+| 1:45–1:55 | Database overview (conceptual)            | Lecture + diagram            |
+| 1:55–2:00 | Wrap-up, homework                         | Discussion                   |
 
 ---
 
@@ -90,30 +90,30 @@ JSON (JavaScript Object Notation) is the standard format APIs use to send struct
 
 ```json
 {
-    "name": "Sara",
-    "age": 25,
-    "skills": ["Python", "HTML", "CSS"]
+  "name": "Sara",
+  "age": 25,
+  "skills": ["Python", "HTML", "CSS"]
 }
 ```
 
 Point out explicitly: **this is nearly identical to a Python dictionary** (Lesson 13). The main practical differences:
 
-| Python Dict            | JSON                      |
-| ------------------------ | --------------------------- |
-| `True` / `False` / `None` | `true` / `false` / `null`   |
-| Single or double quotes   | Double quotes only            |
+| Python Dict               | JSON                             |
+| ------------------------- | -------------------------------- |
+| `True` / `False` / `None` | `true` / `false` / `null`        |
+| Single or double quotes   | Double quotes only               |
 | A Python object in memory | Plain text sent over the network |
 
 ### HTTP Verbs — Now With Real Meaning
 
 Students saw this table in Lesson 16 as a preview. Now it becomes something they build.
 
-| Verb   | Meaning              | Typical Use                       |
-| ------ | ---------------------- | ------------------------------------ |
-| GET    | Retrieve data          | Load a list of products               |
-| POST   | Create new data        | Submit a signup form                  |
-| PUT    | Update existing data    | Edit a user's profile                 |
-| DELETE | Remove data            | Delete a comment                      |
+| Verb   | Meaning              | Typical Use             |
+| ------ | -------------------- | ----------------------- |
+| GET    | Retrieve data        | Load a list of products |
+| POST   | Create new data      | Submit a signup form    |
+| PUT    | Update existing data | Edit a user's profile   |
+| DELETE | Remove data          | Delete a comment        |
 
 ---
 
@@ -158,13 +158,13 @@ Then open `http://127.0.0.1:5000` in the browser — **this is the moment to con
 
 ### Explaining the Code
 
-| Line                        | What it does                                        |
-| ----------------------------- | ------------------------------------------------------ |
-| `app = Flask(__name__)`       | Creates the server application                          |
-| `@app.route("/")`             | A **decorator** — maps a URL path to a function         |
-| `def home():`                 | The function that runs when that path is requested       |
-| `return "Hello, World!"`      | Whatever is returned becomes the HTTP response body       |
-| `app.run(debug=True)`         | Starts the server listening for requests                  |
+| Line                     | What it does                                        |
+| ------------------------ | --------------------------------------------------- |
+| `app = Flask(__name__)`  | Creates the server application                      |
+| `@app.route("/")`        | A **decorator** — maps a URL path to a function     |
+| `def home():`            | The function that runs when that path is requested  |
+| `return "Hello, World!"` | Whatever is returned becomes the HTTP response body |
+| `app.run(debug=True)`    | Starts the server listening for requests            |
 
 > `debug=True` auto-reloads the server on code changes and shows detailed error pages — useful for learning, should be turned off in production (worth one sentence, not a detour).
 
@@ -179,6 +179,18 @@ Expected answer: the app will respond at `http://127.0.0.1:5000/hello`; the old 
 ## 4. Building a JSON API Route (20 min)
 
 Extend the app with a route that returns JSON instead of plain text:
+pre setup
+
+```cmd
+python -m venv project_name_env
+#mac
+source myenv/bin/activate
+#windows
+myenv\Scripts\activate
+
+pip install requests
+pip freeze > requirements.txt
+```
 
 ```python
 from flask import Flask, jsonify
@@ -229,7 +241,7 @@ Before moving on, students should confirm:
 
 ## 5. Reading API Data with `requests` (15 min)
 
-Flip perspective one more time: now Python acts as the *client*, requesting data from someone else's server.
+Flip perspective one more time: now Python acts as the _client_, requesting data from someone else's server.
 
 ```bash
 pip install requests
@@ -251,11 +263,11 @@ print(data["name"])
 print(data["public_repos"])
 ```
 
-| Line                         | What it does                              |
-| ------------------------------ | -------------------------------------------- |
-| `requests.get(url)`            | Sends a GET request, just like a browser does |
-| `response.json()`              | Converts the JSON response into a Python dict |
-| `data["name"]`                 | Access it exactly like any dict (Lesson 13)   |
+| Line                | What it does                                  |
+| ------------------- | --------------------------------------------- |
+| `requests.get(url)` | Sends a GET request, just like a browser does |
+| `response.json()`   | Converts the JSON response into a Python dict |
+| `data["name"]`      | Access it exactly like any dict (Lesson 13)   |
 
 Use any free, no-auth public API for the live demo (a public REST test API, or GitHub's user endpoint as above) so nothing blocks on setting up API keys mid-lecture.
 
@@ -263,10 +275,10 @@ Use any free, no-auth public API for the live demo (a public REST test API, or G
 
 This lesson uses the word "request" in two directions:
 
-| Situation | Your Code's Role | What Happens |
-| --------- | ---------------- | ------------ |
-| Flask route | Server | Receives a request from a browser |
-| `requests.get(...)` script | Client | Sends a request to another server |
+| Situation                  | Your Code's Role | What Happens                      |
+| -------------------------- | ---------------- | --------------------------------- |
+| Flask route                | Server           | Receives a request from a browser |
+| `requests.get(...)` script | Client           | Sends a request to another server |
 
 This distinction is worth repeating because the names are similar.
 
@@ -284,12 +296,12 @@ Keep this section high-level. A full database module is out of scope for this co
 └─────────────┘               └──────────────┘
 ```
 
-Without a database, data typed into an app disappears the moment the server restarts — the same limitation as a Python script that only holds values in variables during a single run (tie back to Lesson 14's file handling: files were the students' first taste of *persistence*).
+Without a database, data typed into an app disappears the moment the server restarts — the same limitation as a Python script that only holds values in variables during a single run (tie back to Lesson 14's file handling: files were the students' first taste of _persistence_).
 
-| Type       | Example         | Structure                        |
-| ----------- | ----------------- | ----------------------------------- |
-| SQL         | PostgreSQL, MySQL | Tables with rows and columns, like a spreadsheet |
-| NoSQL       | MongoDB           | Flexible documents, closer to nested JSON |
+| Type  | Example           | Structure                                        |
+| ----- | ----------------- | ------------------------------------------------ |
+| SQL   | PostgreSQL, MySQL | Tables with rows and columns, like a spreadsheet |
+| NoSQL | MongoDB           | Flexible documents, closer to nested JSON        |
 
 > One-line takeaway: "A database is just a more powerful, permanent, multi-user version of the `.txt` and `.csv` files you already know how to read and write."
 
@@ -320,7 +332,7 @@ Students are ready for Lesson 20 if they can:
 - Forgetting `pip install flask` / `pip install requests` before running
 - Route path typos (`/api/student` vs `/api/students`) — reinforce careful reading, same muscle as reading Python tracebacks (Lesson 03)
 - Returning data inconsistently — for this course, use `jsonify()` for JSON responses so the intent is clear
-- Confusing the Flask server's `requests` (incoming, handled by routes) with the `requests` *library* (outgoing, used to call other APIs) — same word, opposite direction. Worth explicitly disambiguating.
+- Confusing the Flask server's `requests` (incoming, handled by routes) with the `requests` _library_ (outgoing, used to call other APIs) — same word, opposite direction. Worth explicitly disambiguating.
 - Forgetting that the Flask terminal must stay running while testing the app in the browser
 
 ---
@@ -329,7 +341,7 @@ Students are ready for Lesson 20 if they can:
 
 1. Add a third route to your Flask app that accepts a name via the URL (like the `/api/greet/<name>` example) and returns a personalized JSON message
 2. Find one free public API online, use `requests` to call it, and print two different fields from the response
-3. In 2–3 sentences: explain the difference between your Flask app acting as a *server* and your `requests` script acting as a *client*
+3. In 2–3 sentences: explain the difference between your Flask app acting as a _server_ and your `requests` script acting as a _client_
 
 ### Exit Ticket
 
@@ -342,3 +354,7 @@ Before leaving, students answer:
 ## Looking Ahead
 
 Lesson 20 is the capstone: students combine everything from Phases 2–5 — Python logic, Flask backend, HTML/CSS/JS frontend — into one small full-stack project, and the course closes with career paths and next steps.
+
+## extra links
+
+[free api](https://public-api-lists.github.io/public-api-lists/)
