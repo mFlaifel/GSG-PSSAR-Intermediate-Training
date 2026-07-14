@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 19 Todo List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main class="page">
+        <section class="todo-app" aria-labelledby="page-title">
+            <header class="app-header">
+                <p class="eyebrow">Lesson 19 Project</p>
+                <h1 id="page-title">Todo List</h1>
+                <p class="summary">
+                    {{ remaining_count }} task{{ "" if remaining_count == 1 else "s" }} remaining
+                </p>
+            </header>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="message" role="alert">
+                        {{ messages[0] }}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form class="task-form" action="{{ url_for('add_task_route') }}" method="post">
+                <label for="title">New task</label>
+                <div class="form-row">
+                    <input
+                        id="title"
+                        name="title"
+                        type="text"
+                        placeholder="Example: Buy groceries"
+                        autocomplete="off"
+                    >
+                    <button type="submit">Add</button>
+                </div>
+            </form>
+
+            <ul class="task-list" aria-label="Todo tasks">
+                {% for task in tasks %}
+                    <li class="task-item {{ 'done' if task.is_done else '' }}">
+                        <form action="{{ url_for('toggle_task_route', task_id=task.id) }}" method="post">
+                            <button class="check-button" type="submit">
+                                {{ "Undo" if task.is_done else "Done" }}
+                            </button>
+                        </form>
+
+                        <span class="task-title">{{ task.title }}</span>
+
+                        <form action="{{ url_for('delete_task_route', task_id=task.id) }}" method="post">
+                            <button class="delete-button" type="submit">Delete</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="empty-state">No tasks yet. Add your first one above.</li>
+                {% endfor %}
+            </ul>
+        </section>
+    </main>
+</body>
+</html>
