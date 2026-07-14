@@ -228,6 +228,17 @@ def greet(name):
 
 Visiting `/api/greet/Sara` returns `{"message": "Hello, Sara!"}` — show how the URL itself can carry data into the function.
 
+can also return html
+
+````python
+@app.route("/")
+def home():
+    return """
+    <h1>Welcome</h1>
+    <p>This is Flask.</p>
+    """
+```
+
 ### JSON Route Checklist
 
 Before moving on, students should confirm:
@@ -237,7 +248,86 @@ Before moving on, students should confirm:
 - `/api/student` returns JSON
 - The browser URL matches the route exactly
 
+## Receiving Query Parameters
+
+URL:
+
+```text
+/search?q=python
+```
+
+Code:
+
+```python
+from flask import request
+
+@app.route("/search")
+def search():
+    q = request.args.get("q")
+    return f"You searched for {q}"
+```
+
+Response:
+
+```text
+You searched for python
+```
+
+## Handling POST Requests
+
+Client sends data:
+
+```python
+@app.route("/login", methods=["POST"])
+def login():
+    return "Logged in"
+```
 ---
+
+## Templates
+
+Instead of writing HTML inside Python, create files.
+
+Project:
+
+```text
+project/
+│
+├── app.py
+└── templates/
+    └── index.html
+```
+
+`index.html`
+
+```html
+<h1>Hello {{ name }}</h1>
+```
+
+`app.py`
+
+```python
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return render_template(
+        "index.html",
+        name="Mohammed"
+    )
+
+app.run()
+```
+
+Result:
+
+```html
+<h1>Hello Mohammed</h1>
+```
+
+
 
 ## 5. Reading API Data with `requests` (15 min)
 
@@ -245,7 +335,7 @@ Flip perspective one more time: now Python acts as the _client_, requesting data
 
 ```bash
 pip install requests
-```
+````
 
 If needed:
 
