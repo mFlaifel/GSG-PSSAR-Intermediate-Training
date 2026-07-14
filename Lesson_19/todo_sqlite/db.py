@@ -1,60 +1,55 @@
-import json
 import os
+import sqlite3
 from datetime import datetime
 
-DATA_FILE = os.path.join(os.path.dirname(__file__), "tasks.json")
+DB_PATH = os.path.join(os.path.dirname(__file__), "tasks.db")
 
 
-# Loads all tasks from the JSON file and returns them as a list
-def _load_tasks():
-    if not os.path.exists(DATA_FILE):
-        return []
-    with open(DATA_FILE, "r") as f:
-        return json.load(f)
+def _get_conn():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
 
 
-# Saves the list of tasks to the JSON file
-def _save_tasks(tasks):
-    with open(DATA_FILE, "w") as f:
-        json.dump(tasks, f, indent=2)
+def init_db():
+    with _get_conn() as conn:
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS tasks (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                is_done INTEGER NOT NULL DEFAULT 0,
+                created_at TEXT NOT NULL
+            )
+            """
+        )
 
 
-# Returns all tasks, sorted so incomplete tasks come first, then by creation date
 def fetch_tasks():
-    tasks = _load_tasks()
-    # Sort by is_done first (False < True, so incomplete tasks appear first),
-    # then by created_at so older tasks come before newer ones
-    tasks.sort(key=lambda t: (t["is_done"], t["created_at"]))
-    return tasks
+    with _get_conn() as conn:
+        rows = conn.execute(
+            "SELECT id, title, is_done, created_at FROM tasks ORDER BY is_done, created_at"
+        ).fetchall()
+    return [
+        {"id": r["id"], "title": r["title"], "is_done": bool(r["is_done"]), "created_at": r["created_at"]}
+        for r in rows
+    ]
 
 
-# Adds a new task with the given title and saves it to the file
 def add_task(title):
-    tasks = _load_tasks()
-    next_id = max((t["id"] for t in tasks), default=0) + 1
-    task = {
-        "id": next_id,
-        "title": title,
-        "is_done": False,
-        "created_at": datetime.now().isoformat(),
-    }
-    tasks.append(task)
-    _save_tasks(tasks)
-    return task
+    with _get_conn() as conn:
+        cursor = conn.execute(
+            "INSERT INTO tasks (title, is_done, created_at) VALUES (?, 0, ?)",
+            (title, datetime.now().isoformat()),
+        )
+        return {"id": cursor.lastrowid, "title": title, "is_done": False, "created_at": datetime.now().isoformat()}
 
 
-# Toggles a task between done and not done, then saves the change
 def toggle_task(task_id):
-    tasks = _load_tasks()
-    for task in tasks:
-        if task["id"] == task_id:
-            task["is_done"] = not task["is_done"]
-            break
-    _save_tasks(tasks)
+    with _get_conn() as conn:
+        conn.execute("UPDATE tasks SET is_done = NOT is_done WHERE id = ?", (task_id,))
 
 
-# Removes a task by its ID and saves the updated list
 def delete_task(task_id):
-    tasks = _load_tasks()
-    tasks = [t for t in tasks if t["id"] != task_id]
-    _save_tasks(tasks)
+    with _get_conn() as conn:
+        conn.execute("DELETE FROM tasks WHERE id = ?", (task_id,))

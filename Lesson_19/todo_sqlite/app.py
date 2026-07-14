@@ -1,6 +1,6 @@
 from flask import Flask, flash, redirect, render_template, request, url_for
 
-from db import add_task, delete_task, fetch_tasks, toggle_task
+from db import add_task, delete_task, fetch_tasks, init_db, toggle_task
 
 
 app = Flask(__name__)
@@ -39,4 +39,5 @@ def delete_task_route(task_id):
 
 
 if __name__ == "__main__":
+    init_db()
     app.run(debug=True)
