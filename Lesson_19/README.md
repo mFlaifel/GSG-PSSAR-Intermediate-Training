@@ -447,4 +447,5 @@ Lesson 20 is the capstone: students combine everything from Phases 2–5 — Pyt
 
 ## extra links
 
-[free api](https://public-api-lists.github.io/public-api-lists/)
+- [free api](https://public-api-lists.github.io/public-api-lists/)
+- [check if port is in use and kill it](https://chatgpt.com/share/6a579195-3170-83e9-8776-caf76c14ba28)
