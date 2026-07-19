@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>quote</title>
+  </head>
+  <body>
+    <h1>random quote generator</h1>
+    <button class="generator">Get new Quote</button>
+    <p class="quote"></p>
+    <script>
+      const generatorBtn = document.querySelector(".generator");
+      const quoteTextPlaceholder = document.querySelector(".quote");
+
+      console.log({ generatorBtn });
+      console.log(generatorBtn.textContent);
+
+      //   function getQuote() {
+      //     fetch("http://127.0.0.1:5000/api/quote")
+      //       .then((res) => res.json())
+      //       .then((res) => (quoteTextPlaceholder.textContent = res.quote));
+      //   }
+
+      async function getQuote() {
+        const response = await fetch("http://127.0.0.1:5000/api/quote");
+        const responseJson = await response.json();
+        quoteTextPlaceholder.textContent = responseJson.quote;
+      }
+      generatorBtn.addEventListener("click", getQuote);
+    </script>
+  </body>
+</html>
