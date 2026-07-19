@@ -272,6 +272,11 @@ Briefly map the paths that build on what was just covered, without diving deep i
 
 ### Resources for Continued Learning
 
+- [CS50x: Introduction to Computer Science](https://cs50.harvard.edu/x/) — a strong next step for students who want a deeper computer science foundation
+- [roadmap.sh](https://roadmap.sh/) — visual learning paths for frontend, backend, full-stack, Python, Git/GitHub, data, AI, and more
+- [GitHub Student Developer Pack](https://education.github.com/pack) — free and discounted developer tools for verified students
+- [GitHub Skills](https://skills.github.com/) — short hands-on practice courses for Git, GitHub, publishing projects, and collaboration
+- [GitHub Docs: Setting up your profile](https://docs.github.com/en/get-started/start-your-journey/setting-up-your-profile) — guidance for making a student GitHub profile presentable
 - University computer science program pathways, for students considering formal study
 - Open-source contribution as a way to keep building real skills
 - Building small personal projects — the single best predictor of continued growth after any bootcamp-style course
